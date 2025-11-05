@@ -25,9 +25,6 @@ interface MapboxPropertyMapProps {
   hoveredPropertyId?: string | null;
 }
 
-/** Tune clustering just for the bubbles (pills are independent of this). */
-const CLUSTER_MAX_ZOOM = 10; // lower -> uncluster earlier
-const CLUSTER_RADIUS   = 35; // lower -> less merging
 
 /** -------- Algeria helpers -------- */
 const norm = (s: string) =>
@@ -93,7 +90,6 @@ export const MapboxPropertyMap = ({ properties, hoveredPropertyId }: MapboxPrope
   const [isMapReady, setIsMapReady] = useState(false);
   const [token, setToken] = useState('');
   const [mapError, setMapError] = useState<string | null>(null);
-  const layersAdded = useRef(false);
   const htmlMarkers = useRef<mapboxgl.Marker[]>([]);
   const zoomLevelRef = useRef(5);
   const zoomTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -176,7 +172,6 @@ export const MapboxPropertyMap = ({ properties, hoveredPropertyId }: MapboxPrope
         m.remove();
         map.current = null;
         setIsMapReady(false);
-        layersAdded.current = false;
       };
     } catch (error) {
       console.error('Map initialization failed:', error);
@@ -184,105 +179,11 @@ export const MapboxPropertyMap = ({ properties, hoveredPropertyId }: MapboxPrope
     }
   }, [token]);
 
-  /** Add cluster layers once (for the red circles with counts). Pills do NOT depend on this. */
-  useEffect(() => {
-    const m = map.current;
-    if (!m || !isMapReady || layersAdded.current) return;
-
-    const toFC = (): GeoJSON.FeatureCollection<GeoJSON.Point, any> => ({
-      type: 'FeatureCollection',
-      features: properties
-        .map((p) => {
-          const lat = p.latitude ?? cityLL(p.city).lat;
-          const lng = p.longitude ?? cityLL(p.city).lng;
-          if (lat == null || lng == null) return null;
-          return {
-            type: 'Feature',
-            geometry: { type: 'Point', coordinates: [lng, lat] },
-            properties: {},
-          } as GeoJSON.Feature<GeoJSON.Point>;
-        })
-        .filter(Boolean) as GeoJSON.Feature<GeoJSON.Point, any>[],
-    });
-
-    if (!m.getSource('props')) {
-      m.addSource('props', {
-        type: 'geojson',
-        data: toFC(),
-        cluster: true,
-        clusterMaxZoom: CLUSTER_MAX_ZOOM,
-        clusterRadius: CLUSTER_RADIUS,
-      });
-
-      m.addLayer({
-        id: 'prop-clusters',
-        type: 'circle',
-        source: 'props',
-        filter: ['has', 'point_count'],
-        paint: {
-          'circle-color': '#FF385C',
-          'circle-radius': ['step', ['get', 'point_count'], 16, 10, 18, 25, 22, 50, 28],
-          'circle-stroke-width': 2,
-          'circle-stroke-color': '#ffffff',
-        },
-      });
-
-      m.addLayer({
-        id: 'prop-cluster-count',
-        type: 'symbol',
-        source: 'props',
-        filter: ['has', 'point_count'],
-        layout: {
-          'text-field': ['get', 'point_count_abbreviated'],
-          'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-          'text-size': 12,
-        },
-        paint: { 'text-color': '#ffffff' },
-      });
-
-      m.on('click', 'prop-clusters', (e) => {
-        const feats = m.queryRenderedFeatures(e.point, { layers: ['prop-clusters'] });
-        if (!feats.length) return;
-        const clusterId = feats[0].properties?.cluster_id as number;
-        const src = m.getSource('props') as mapboxgl.GeoJSONSource;
-        src.getClusterExpansionZoom(clusterId, (err, zoom) => {
-          if (err) return;
-          m.easeTo({ center: (feats[0].geometry as any).coordinates, zoom });
-        });
-      });
-
-      m.on('mouseenter', 'prop-clusters', () => (m.getCanvas().style.cursor = 'pointer'));
-      m.on('mouseleave', 'prop-clusters', () => (m.getCanvas().style.cursor = ''));
-
-      layersAdded.current = true;
-    }
-  }, [isMapReady, properties]);
 
   /** Draw price pills IMMEDIATELY from `properties` (with spiderfy). */
   useEffect(() => {
     const m = map.current;
     if (!m || !isMapReady) return;
-
-    // update cluster source data (optional, for bubbles only)
-    const clusterSrc = m.getSource('props') as mapboxgl.GeoJSONSource | undefined;
-    if (clusterSrc) {
-      const fc: GeoJSON.FeatureCollection<GeoJSON.Point, any> = {
-        type: 'FeatureCollection',
-        features: properties
-          .map((p) => {
-            const lat = p.latitude ?? cityLL(p.city).lat;
-            const lng = p.longitude ?? cityLL(p.city).lng;
-            if (lat == null || lng == null) return null;
-            return {
-              type: 'Feature',
-              geometry: { type: 'Point', coordinates: [lng, lat] },
-              properties: {},
-            } as GeoJSON.Feature<GeoJSON.Point>;
-          })
-          .filter(Boolean) as any[],
-      };
-      clusterSrc.setData(fc);
-    }
 
     // clear existing pills
     htmlMarkers.current.forEach(mm => mm.remove());
