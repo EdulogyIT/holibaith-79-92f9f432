@@ -616,25 +616,25 @@ const PropertyEnhanced = () => {
                       {pricingBreakdown && (
                           <div className="p-3 rounded-lg bg-muted/50 space-y-2 text-sm">
                           <div className="flex justify-between">
-                            <span>{pricingBreakdown.numberOfNights} nights</span>
-                            <span>{formatPrice(pricingBreakdown.baseTotal.toString(), property.price_type, property.price_currency || "DZD")}</span>
+                            <span>{pricingBreakdown.nights} nights</span>
+                            <span>{formatPrice(pricingBreakdown.subtotal, property.price_type, property.price_currency || "DZD")}</span>
                           </div>
                           {pricingBreakdown.cleaningFee > 0 && (
                             <div className="flex justify-between">
                               <span>Cleaning fee</span>
-                              <span>{formatPrice(pricingBreakdown.cleaningFee.toString(), property.price_type, property.price_currency || "DZD")}</span>
+                              <span>{formatPrice(pricingBreakdown.cleaningFee, property.price_type, property.price_currency || "DZD")}</span>
                             </div>
                           )}
                           {pricingBreakdown.serviceFee > 0 && (
                             <div className="flex justify-between">
                               <span>Service fee</span>
-                              <span>{formatPrice(pricingBreakdown.serviceFee.toString(), property.price_type, property.price_currency || "DZD")}</span>
+                              <span>{formatPrice(pricingBreakdown.serviceFee, property.price_type, property.price_currency || "DZD")}</span>
                             </div>
                           )}
                           <Separator />
                           <div className="flex justify-between font-bold">
                             <span>Total</span>
-                            <span>{formatPrice(pricingBreakdown.totalPrice.toString(), property.price_type, property.price_currency || "DZD")}</span>
+                            <span>{formatPrice(pricingBreakdown.total, property.price_type, property.price_currency || "DZD")}</span>
                           </div>
                         </div>
                       )}
