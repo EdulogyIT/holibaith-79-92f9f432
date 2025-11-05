@@ -247,7 +247,7 @@ export const MapboxPropertyMap = ({ properties, hoveredPropertyId }: MapboxPrope
       htmlMarkers.current.forEach(mm => mm.remove());
       htmlMarkers.current = [];
     };
-  }, [properties, isMapReady, formatPrice, navigate]);
+  }, [properties, isMapReady]);
 
   // Update marker styles when hoveredPropertyId changes
   useEffect(() => {
