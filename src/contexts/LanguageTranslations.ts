@@ -461,6 +461,7 @@ export const buyRentTranslations = {
       calendar: "Calendrier",
       listings: "Annonces",
       payoutsSettings: "Paiements et Paramètres",
+      viewProfile: "Voir le Profil",
     },
 
     // Admin Dashboard Translations
@@ -1066,6 +1067,7 @@ export const buyRentTranslations = {
       calendar: "Calendar",
       listings: "Listings",
       payoutsSettings: "Payouts & Settings",
+      viewProfile: "View Profile",
     },
 
     // Admin Dashboard Translations
@@ -1648,6 +1650,7 @@ export const buyRentTranslations = {
       calendar: "التقويم",
       listings: "القوائم",
       payoutsSettings: "المدفوعات والإعدادات",
+      viewProfile: "عرض الملف الشخصي",
     },
 
     // Admin Dashboard Translations

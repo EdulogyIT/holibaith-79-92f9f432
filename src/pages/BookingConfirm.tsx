@@ -46,11 +46,24 @@ export default function BookingConfirm() {
   const [pricingBreakdown, setPricingBreakdown] = useState<any>(null);
   const [pricingLoading, setPricingLoading] = useState(false);
 
-  // Get booking context from URL
+  // Get booking context from URL with better validation
   const checkInDate = searchParams.get('checkIn') ? new Date(searchParams.get('checkIn')!) : undefined;
   const checkOutDate = searchParams.get('checkOut') ? new Date(searchParams.get('checkOut')!) : undefined;
   const guestsCount = parseInt(searchParams.get('guests') || '1');
   const petsCount = parseInt(searchParams.get('pets') || '0');
+
+  // Debug logging for booking parameters
+  useEffect(() => {
+    console.log('📅 BookingConfirm URL Params:', {
+      checkIn: searchParams.get('checkIn'),
+      checkOut: searchParams.get('checkOut'),
+      checkInDate,
+      checkOutDate,
+      guestsCount,
+      petsCount,
+      isValidDates: checkInDate && checkOutDate && !isNaN(checkInDate.getTime()) && !isNaN(checkOutDate.getTime())
+    });
+  }, [searchParams, checkInDate, checkOutDate, guestsCount, petsCount]);
 
   useEffect(() => {
     if (propertyId) {

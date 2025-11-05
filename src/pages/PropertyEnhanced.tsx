@@ -335,29 +335,27 @@ const PropertyEnhanced = () => {
 
             <Separator />
 
-            {/* Compact owner */}
-            {profile && (
-              <>
-                <div className="bg-card border border-border rounded-xl p-4 sm:p-6 hover:shadow-md transition-shadow w-full max-w-full">
-                  <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">
-                    {isBuy ? "Meet the seller" : isRent ? "Meet your landlord" : "Meet your host"}
-                  </h3>
-                  <VerifiedOwnerSection
-                    name={profile.name || "Property Owner"}
-                    avatarUrl={profile.avatar_url}
-                    verifiedSince={verificationYear.toString()}
-                    city={property.city}
-                    languages={profile.languages_spoken || ["Arabic", "French"]}
-                    transactionCount={profile.transaction_count || 0}
-                    responseRate={profile.response_rate || 100}
-                    averageRating={profile.average_rating}
-                    isVerified={profile.id_verified || profile.ownership_verified || false}
-                    category={isBuy ? "buy" : (isRent ? "rent" : "short-stay")}
-                  />
-                </div>
-                <Separator />
-              </>
-            )}
+            {/* Compact owner - ALWAYS SHOW */}
+            <>
+              <div className="bg-card border border-border rounded-xl p-4 sm:p-6 hover:shadow-md transition-shadow w-full max-w-full">
+                <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">
+                  {isBuy ? "Meet the seller" : isRent ? "Meet your landlord" : "Meet your host"}
+                </h3>
+                <VerifiedOwnerSection
+                  name={profile?.name || "Property Owner"}
+                  avatarUrl={profile?.avatar_url}
+                  verifiedSince={verificationYear.toString()}
+                  city={property.city}
+                  languages={profile?.languages_spoken || ["Arabic", "French"]}
+                  transactionCount={profile?.transaction_count || 0}
+                  responseRate={profile?.response_rate || 100}
+                  averageRating={profile?.average_rating}
+                  isVerified={profile?.id_verified || profile?.ownership_verified || false}
+                  category={isBuy ? "buy" : (isRent ? "rent" : "short-stay")}
+                />
+              </div>
+              <Separator />
+            </>
 
             {/* About */}
             <div className="space-y-3 sm:space-y-4">
@@ -426,6 +424,25 @@ const PropertyEnhanced = () => {
 
             <Separator />
 
+            {/* Availability Calendar for Short-Stay */}
+            {isShortStay && (
+              <>
+                <div className="space-y-3 sm:space-y-4">
+                  <h2 className="text-xl sm:text-2xl md:text-3xl font-bold">Availability</h2>
+                  <PropertyAvailabilityCalendar
+                    propertyId={property.id}
+                    basePrice={property.price}
+                    priceType={property.price_type}
+                    minNights={1}
+                    maxNights={365}
+                    onDateSelect={(dates) => setSelectedDates(dates)}
+                    onApply={() => {}}
+                  />
+                </div>
+                <Separator />
+              </>
+            )}
+
             {/* Where you'll be */}
             <div className="space-y-3 sm:space-y-4">
               <h2 className="text-xl sm:text-2xl md:text-3xl font-bold">Where you'll be</h2>
@@ -458,21 +475,17 @@ const PropertyEnhanced = () => {
 
             <Separator />
 
-            {/* Host details */}
-            {profile && (
-              <>
-                <div className="space-y-3 sm:space-y-4">
-                  <h2 className="text-xl sm:text-2xl md:text-3xl font-bold">
-                    {isBuy ? "About the seller" : isRent ? "About your landlord" : "Meet your host"}
-                  </h2>
-                  <HostDetailsSection 
-                    userId={property.user_id || ""} 
-                    onContactHost={() => setIsMessageModalOpen(true)}
-                  />
-                </div>
-                <Separator />
-              </>
-            )}
+            {/* Host details - ALWAYS SHOW */}
+            <div className="space-y-3 sm:space-y-4">
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold">
+                {isBuy ? "About the seller" : isRent ? "About your landlord" : "Meet your host"}
+              </h2>
+              <HostDetailsSection 
+                userId={property.user_id || ""} 
+                onContactHost={() => setIsMessageModalOpen(true)}
+              />
+            </div>
+            <Separator />
 
             {/* Holibayt Pay */}
             {property.holibayt_pay_eligible && (
@@ -507,10 +520,10 @@ const PropertyEnhanced = () => {
             >
               {/* Price */}
               <div>
-                <div className="flex items-start sm:items-baseline justify-between gap-3 mb-2">
-                  <div className="text-2xl sm:text-3xl font-bold text-primary break-words">
-                    {formatPrice(parseFloat(property.price), property.price_type, property.price_currency || "DZD")}
-                  </div>
+                  <div className="flex items-start sm:items-baseline justify-between gap-3 mb-2">
+                    <div className="text-2xl sm:text-3xl font-bold text-primary break-words">
+                      {formatPrice(parseFloat(property.price), isShortStay ? "per_night" : property.price_type, property.price_currency || "DZD")}
+                    </div>
                   <div className="shrink-0">
                     <CurrencySelector />
                   </div>
@@ -617,24 +630,24 @@ const PropertyEnhanced = () => {
                           <div className="p-3 rounded-lg bg-muted/50 space-y-2 text-sm">
                           <div className="flex justify-between">
                             <span>{pricingBreakdown.nights} nights</span>
-                            <span>{formatPrice(pricingBreakdown.subtotal, property.price_type, property.price_currency || "DZD")}</span>
+                            <span>{formatPrice(pricingBreakdown.subtotal, undefined, property.price_currency || "DZD")}</span>
                           </div>
                           {pricingBreakdown.cleaningFee > 0 && (
                             <div className="flex justify-between">
                               <span>Cleaning fee</span>
-                              <span>{formatPrice(pricingBreakdown.cleaningFee, property.price_type, property.price_currency || "DZD")}</span>
+                              <span>{formatPrice(pricingBreakdown.cleaningFee, undefined, property.price_currency || "DZD")}</span>
                             </div>
                           )}
                           {pricingBreakdown.serviceFee > 0 && (
                             <div className="flex justify-between">
                               <span>Service fee</span>
-                              <span>{formatPrice(pricingBreakdown.serviceFee, property.price_type, property.price_currency || "DZD")}</span>
+                              <span>{formatPrice(pricingBreakdown.serviceFee, undefined, property.price_currency || "DZD")}</span>
                             </div>
                           )}
                           <Separator />
                           <div className="flex justify-between font-bold">
                             <span>Total</span>
-                            <span>{formatPrice(pricingBreakdown.total, property.price_type, property.price_currency || "DZD")}</span>
+                            <span>{formatPrice(pricingBreakdown.total, undefined, property.price_currency || "DZD")}</span>
                           </div>
                         </div>
                       )}

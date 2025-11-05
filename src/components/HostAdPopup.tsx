@@ -78,7 +78,8 @@ export const HostAdPopup = () => {
 
   const handleViewProfile = () => {
     if (host) {
-      navigate(`/host-profile/${host.id}`);
+      // Navigate to profile page with userId parameter
+      navigate(`/profile?userId=${host.id}`);
       setOpen(false);
     }
   };
@@ -158,7 +159,7 @@ export const HostAdPopup = () => {
           )}
 
           <Button onClick={handleViewProfile} className="w-full" size="lg">
-            {t('viewProfile') || 'View Profile'}
+            {t('host.viewProfile') || 'View Profile'}
           </Button>
         </div>
       </DialogContent>
