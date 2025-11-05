@@ -71,9 +71,9 @@ export const calculateBookingPrice = async (
       .eq('property_id', propertyId)
       .eq('is_active', true);
 
-    // Fetch all in parallel with 5 second timeout (reduced from 10s)
+    // Fetch all in parallel with 10 second timeout
     const timeout = new Promise((_, reject) => 
-      setTimeout(() => reject(new Error('Pricing fetch timeout (5s)')), 5000)
+      setTimeout(() => reject(new Error('Pricing fetch timeout (10s)')), 10000)
     );
 
     const [seasonalResult, feesResult, rulesResult] = await Promise.race([
@@ -240,6 +240,14 @@ export const calculateBookingPrice = async (
     };
   } catch (error) {
     console.error('Error calculating booking price:', error);
+    console.error('Error details:', {
+      propertyId,
+      checkInDate: checkInDate.toISOString(),
+      checkOutDate: checkOutDate.toISOString(),
+      guestCount,
+      petCount,
+      errorMessage: error instanceof Error ? error.message : String(error)
+    });
     throw error;
   }
 };

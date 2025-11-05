@@ -45,6 +45,7 @@ export default function BookingConfirm() {
   const [contactPhone, setContactPhone] = useState('');
   const [pricingBreakdown, setPricingBreakdown] = useState<any>(null);
   const [pricingLoading, setPricingLoading] = useState(false);
+  const [hasShownEstimateToast, setHasShownEstimateToast] = useState(false);
 
   // Get booking context from URL with better validation
   const checkInParam = searchParams.get('checkIn');
@@ -152,12 +153,27 @@ export default function BookingConfirm() {
         setPricingBreakdown(breakdown);
       } catch (pricingError) {
         console.error('Error calculating detailed pricing:', pricingError);
-        // Keep the estimated pricing
-        toast({
-          variant: 'default',
-          title: 'Using Estimated Pricing',
-          description: 'Unable to calculate exact fees. Showing base estimate.',
-        });
+        // Keep the estimated pricing, show toast only once
+        if (!hasShownEstimateToast) {
+          toast({
+            variant: 'default',
+            title: 'Using Estimated Pricing',
+            description: 'Exact fees unavailable. Click "Retry" to try again.',
+            action: (
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => {
+                  setHasShownEstimateToast(false);
+                  calculatePricing();
+                }}
+              >
+                Retry
+              </Button>
+            ),
+          });
+          setHasShownEstimateToast(true);
+        }
       }
     } catch (error) {
       console.error('Error calculating pricing:', error);

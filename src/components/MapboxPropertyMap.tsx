@@ -193,7 +193,12 @@ export const MapboxPropertyMap = ({ properties, hoveredPropertyId }: MapboxPrope
         };
         el.addEventListener('click', () => navigate(`/property/${p.id}`));
 
-        const popup = new mapboxgl.Popup({ offset: 12 }).setHTML(`
+        // Create popup (shown on hover, not click)
+        const popup = new mapboxgl.Popup({ 
+          offset: 12,
+          closeButton: false,
+          closeOnClick: false
+        }).setHTML(`
           <div style="padding:8px;min-width:200px">
             ${p.images?.[0] ? `<img src="${p.images[0]}" style="width:100%;height:120px;object-fit:cover;border-radius:8px;margin-bottom:8px" />` : ''}
             <div style="font-weight:600;font-size:14px;margin-bottom:4px">${p.title ?? ''}</div>
@@ -204,8 +209,15 @@ export const MapboxPropertyMap = ({ properties, hoveredPropertyId }: MapboxPrope
 
         const marker = new mapboxgl.Marker({ element: el, anchor: 'bottom' })
           .setLngLat([lng, lat])
-          .setPopup(popup)
           .addTo(m);
+
+        // Show popup on hover, hide on mouse leave
+        el.addEventListener('mouseenter', () => {
+          popup.setLngLat([lng, lat]).addTo(m);
+        });
+        el.addEventListener('mouseleave', () => {
+          popup.remove();
+        });
 
         htmlMarkers.current.push(marker);
     });
