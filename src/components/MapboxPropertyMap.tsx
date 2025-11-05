@@ -67,17 +67,22 @@ const groupBy = <T, K extends string | number>(arr: T[], key: (v: T) => K) => {
   return out;
 };
 
-/** Spread coincident points into a ring so all pills are clickable. Dynamic radius based on count. */
-const spiderfy = (map: mapboxgl.Map, base: [number, number], n: number): [number, number][] => {
+/** Spread coincident points into a ring using geographic distance that scales with zoom */
+const spiderfy = (base: [number, number], n: number, zoomLevel: number): [number, number][] => {
   if (n <= 1) return [base];
-  const c = map.project({ lng: base[0], lat: base[1] });
-  // Dynamic radius: scale based on count (26px base + 8px per property beyond 3, cap at 120px)
-  const r = Math.min(26 + Math.max(0, n - 3) * 8, 120);
+  
+  // Calculate offset in degrees (smaller at higher zoom)
+  // At zoom 5: ~0.01 degrees, at zoom 15: ~0.0001 degrees
+  const baseOffset = 0.002; // Base offset in degrees
+  const zoomFactor = Math.pow(2, 10 - zoomLevel); // Scale with zoom
+  const offset = baseOffset * zoomFactor;
+  
   const pts: [number, number][] = [];
   for (let i = 0; i < n; i++) {
-    const a = (2 * Math.PI * i) / n;
-    const p = map.unproject([c.x + r * Math.cos(a), c.y + r * Math.sin(a)]);
-    pts.push([p.lng, p.lat]);
+    const angle = (2 * Math.PI * i) / n;
+    const lng = base[0] + offset * Math.cos(angle);
+    const lat = base[1] + offset * Math.sin(angle);
+    pts.push([lng, lat]);
   }
   return pts;
 };
@@ -293,7 +298,7 @@ export const MapboxPropertyMap = ({ properties, hoveredPropertyId }: MapboxPrope
     for (const [, arr] of groups) {
       const baseLng = arr[0].longitude ?? cityLL(arr[0].city).lng;
       const baseLat = arr[0].latitude ?? cityLL(arr[0].city).lat;
-      const positions = spiderfy(m, [baseLng, baseLat], arr.length);
+      const positions = spiderfy([baseLng, baseLat], arr.length, m.getZoom());
 
       arr.forEach((p, i) => {
         const [lng, lat] = positions[i];
