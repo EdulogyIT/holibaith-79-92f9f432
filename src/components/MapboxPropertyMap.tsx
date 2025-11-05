@@ -54,35 +54,6 @@ const DZ: Record<string, { lat: number; lng: number }> = {
 };
 const cityLL = (city: string) => DZ[norm(city)] || { lat: 36.7538, lng: 3.0588 };
 
-/** -------- tiny utils -------- */
-const groupBy = <T, K extends string | number>(arr: T[], key: (v: T) => K) => {
-  const out = new Map<K, T[]>();
-  for (const it of arr) {
-    const k = key(it);
-    out.set(k, [...(out.get(k) || []), it]);
-  }
-  return out;
-};
-
-/** Spread coincident points into a ring using geographic distance that scales with zoom */
-const spiderfy = (base: [number, number], n: number, zoomLevel: number): [number, number][] => {
-  if (n <= 1) return [base];
-  
-  // Calculate offset in degrees (smaller at higher zoom)
-  // At zoom 5: ~0.01 degrees, at zoom 15: ~0.0001 degrees
-  const baseOffset = 0.002; // Base offset in degrees
-  const zoomFactor = Math.pow(2, 10 - zoomLevel); // Scale with zoom
-  const offset = baseOffset * zoomFactor;
-  
-  const pts: [number, number][] = [];
-  for (let i = 0; i < n; i++) {
-    const angle = (2 * Math.PI * i) / n;
-    const lng = base[0] + offset * Math.cos(angle);
-    const lat = base[1] + offset * Math.sin(angle);
-    pts.push([lng, lat]);
-  }
-  return pts;
-};
 
 export const MapboxPropertyMap = ({ properties, hoveredPropertyId }: MapboxPropertyMapProps) => {
   const mapEl = useRef<HTMLDivElement>(null);
@@ -180,7 +151,7 @@ export const MapboxPropertyMap = ({ properties, hoveredPropertyId }: MapboxPrope
   }, [token]);
 
 
-  /** Draw price pills IMMEDIATELY from `properties` (with spiderfy). */
+  /** Draw price pills at exact coordinates */
   useEffect(() => {
     const m = map.current;
     if (!m || !isMapReady) return;
@@ -189,20 +160,10 @@ export const MapboxPropertyMap = ({ properties, hoveredPropertyId }: MapboxPrope
     htmlMarkers.current.forEach(mm => mm.remove());
     htmlMarkers.current = [];
 
-    // group properties by coordinate (rounded) and spiderfy coincident ones
-    const groups = groupBy(properties, (p) => {
+    // Place each property at its exact coordinates
+    properties.forEach((p) => {
       const lat = p.latitude ?? cityLL(p.city).lat;
       const lng = p.longitude ?? cityLL(p.city).lng;
-      return `${lng.toFixed(5)}|${lat.toFixed(5)}`;
-    });
-
-    for (const [, arr] of groups) {
-      const baseLng = arr[0].longitude ?? cityLL(arr[0].city).lng;
-      const baseLat = arr[0].latitude ?? cityLL(arr[0].city).lat;
-      const positions = spiderfy([baseLng, baseLat], arr.length, m.getZoom());
-
-      arr.forEach((p, i) => {
-        const [lng, lat] = positions[i];
         const priceNum = typeof p.price === 'number' ? p.price : parseFloat(String(p.price));
         const label = formatPrice(priceNum, p.price_type, p.price_currency || 'DZD');
 
@@ -247,8 +208,7 @@ export const MapboxPropertyMap = ({ properties, hoveredPropertyId }: MapboxPrope
           .addTo(m);
 
         htmlMarkers.current.push(marker);
-      });
-    }
+    });
 
     // fit bounds to all markers
     const bounds = new mapboxgl.LngLatBounds();

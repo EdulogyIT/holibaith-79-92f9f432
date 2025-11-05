@@ -68,8 +68,30 @@ serve(async (req) => {
     
     if (existingAccount?.stripe_account_id) {
       accountId = existingAccount.stripe_account_id;
-      logStep("Found existing Stripe account", { accountId });
-    } else {
+      logStep("Found existing Stripe account in DB", { accountId });
+      
+      // Validate that this account exists in Stripe (might be test account in live mode)
+      try {
+        await stripe.accounts.retrieve(accountId);
+        logStep("Stripe account validated successfully", { accountId });
+      } catch (error) {
+        logStep("Stripe account does not exist (likely test account in live mode)", { 
+          accountId, 
+          error: error instanceof Error ? error.message : String(error) 
+        });
+        
+        // Delete invalid account record from database
+        await supabaseClient
+          .from('host_payment_accounts')
+          .delete()
+          .eq('stripe_account_id', accountId);
+        
+        logStep("Deleted invalid account from database, will create new one");
+        accountId = null;
+      }
+    }
+    
+    if (!accountId) {
       // Create new Stripe Connect account
       const account = await stripe.accounts.create({
         type: 'express',
@@ -88,7 +110,7 @@ serve(async (req) => {
       });
 
       accountId = account.id;
-      logStep("Created new Stripe account", { accountId });
+      logStep("Created new Stripe Connect account", { accountId });
 
       // Store in database
       await supabaseClient
