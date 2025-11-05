@@ -10,9 +10,13 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
 import { useEffect, useState } from "react";
-import { BookingModal } from "@/components/BookingModal";
 import { supabase } from "@/integrations/supabase/client";
 import { PaymentButton } from "@/components/PaymentButton";
+import { PropertyAvailabilityCalendar } from "@/components/PropertyAvailabilityCalendar";
+import { GuestsSelector } from "@/components/GuestsSelector";
+import { format } from "date-fns";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { useNavigate } from "react-router-dom";
 import ScheduleVisitModal from "@/components/ScheduleVisitModal";
 import MessageOwnerModal from "@/components/MessageOwnerModal";
 import { PropertyReviews } from "@/components/PropertyReviews";
@@ -114,6 +118,18 @@ const PropertyEnhanced = () => {
   const [showFullDescription, setShowFullDescription] = useState(false);
   const { wishlistIds, toggleWishlist } = useWishlist(user?.id);
   
+  // New booking UI state
+  const [selectedDates, setSelectedDates] = useState<{ checkIn: Date | undefined; checkOut: Date | undefined }>({
+    checkIn: undefined,
+    checkOut: undefined
+  });
+  const [guestCounts, setGuestCounts] = useState({ adults: 1, children: 0, infants: 0, pets: 0 });
+  const [pricingBreakdown, setPricingBreakdown] = useState<any>(null);
+  const [pricingLoading, setPricingLoading] = useState(false);
+  const [checkInPopoverOpen, setCheckInPopoverOpen] = useState(false);
+  const [checkOutPopoverOpen, setCheckOutPopoverOpen] = useState(false);
+  const navigate = useNavigate();
+  
   useScrollToTop();
 
   // i18n helper
@@ -122,10 +138,63 @@ const PropertyEnhanced = () => {
     return translations[key] || key;
   };
 
+  // Property category checks (needed for useEffect hooks)
+  const isBuy = property?.category === "buy" || property?.category === "sale";
+  const isRent = property?.category === "rent";
+  const isShortStay = property?.category === "short-stay";
+
   useEffect(() => {
     if (id) void fetchProperty();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
+
+  // Debugging logs
+  useEffect(() => {
+    console.log('🏠 PropertyEnhanced mounted/updated', {
+      propertyId: property?.id,
+      category: property?.category,
+      isShortStay: property?.category === 'short-stay'
+    });
+  }, [property]);
+
+  useEffect(() => {
+    console.log('📅 Selected dates changed:', selectedDates);
+  }, [selectedDates]);
+
+  useEffect(() => {
+    console.log('👥 Guest counts changed:', guestCounts);
+  }, [guestCounts]);
+
+  useEffect(() => {
+    console.log('🚪 Popover states:', { checkInPopoverOpen, checkOutPopoverOpen });
+  }, [checkInPopoverOpen, checkOutPopoverOpen]);
+
+  // Calculate pricing when dates or guests change (for short-stay)
+  useEffect(() => {
+    if (isShortStay && selectedDates.checkIn && selectedDates.checkOut) {
+      const fetchPricing = async () => {
+        setPricingLoading(true);
+        try {
+          const totalGuests = guestCounts.adults + guestCounts.children;
+          const { calculateBookingPrice } = await import("@/utils/pricingCalculator");
+          const breakdown = await calculateBookingPrice(
+            property!.id,
+            selectedDates.checkIn!,
+            selectedDates.checkOut!,
+            totalGuests,
+            guestCounts.pets
+          );
+          setPricingBreakdown(breakdown);
+          console.log('💰 Pricing calculated:', breakdown);
+        } catch (error) {
+          console.error("Error calculating pricing:", error);
+        } finally {
+          setPricingLoading(false);
+        }
+      };
+      void fetchPricing();
+    }
+  }, [selectedDates, guestCounts, isShortStay, property]);
 
   const fetchProperty = async () => {
     try {
@@ -195,9 +264,6 @@ const PropertyEnhanced = () => {
     );
   }
 
-  const isBuy = property.category === "buy" || property.category === "sale";
-  const isRent = property.category === "rent";
-  const isShortStay = property.category === "short-stay";
   const verificationYear = profile?.kyc_approved_at
     ? new Date(profile.kyc_approved_at).getFullYear()
     : new Date().getFullYear();
@@ -463,15 +529,148 @@ const PropertyEnhanced = () => {
               {/* CTAs */}
               <div className="space-y-2.5 sm:space-y-3">
                 {isShortStay ? (
-                  <BookingModal 
-                    property={property}
-                    trigger={
-                      <Button className="w-full hover:-translate-y-0.5 transition-transform shadow-md" size="lg">
-                        <Calendar className="w-4 h-4 mr-2" />
-                        {t("bookViewingSafely")}
+                  <>
+                    {/* Airbnb-style date and guest pickers */}
+                    <div className="space-y-3">
+                      <div className="grid grid-cols-2 gap-2">
+                        {/* Check-in */}
+                        <Popover open={checkInPopoverOpen} onOpenChange={setCheckInPopoverOpen}>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant="outline"
+                              className="w-full justify-start text-left font-normal h-auto py-2"
+                            >
+                              <div className="flex flex-col w-full">
+                                <span className="text-xs text-muted-foreground">Check-in</span>
+                                <span className="text-sm font-semibold">
+                                  {selectedDates.checkIn ? format(selectedDates.checkIn, "MMM dd") : "Add date"}
+                                </span>
+                              </div>
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <PropertyAvailabilityCalendar
+                              propertyId={property.id}
+                              basePrice={property.price}
+                              priceType={property.price_type}
+                              minNights={1}
+                              maxNights={365}
+                              onDateSelect={(dates) => {
+                                console.log('📅 Check-in onDateSelect called', dates);
+                                setSelectedDates(dates);
+                              }}
+                              onApply={() => {
+                                console.log('📅 Check-in onApply called - closing popover');
+                                setCheckInPopoverOpen(false);
+                              }}
+                            />
+                          </PopoverContent>
+                        </Popover>
+
+                        {/* Check-out */}
+                        <Popover open={checkOutPopoverOpen} onOpenChange={setCheckOutPopoverOpen}>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant="outline"
+                              className="w-full justify-start text-left font-normal h-auto py-2"
+                            >
+                              <div className="flex flex-col w-full">
+                                <span className="text-xs text-muted-foreground">Checkout</span>
+                                <span className="text-sm font-semibold">
+                                  {selectedDates.checkOut ? format(selectedDates.checkOut, "MMM dd") : "Add date"}
+                                </span>
+                              </div>
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <PropertyAvailabilityCalendar
+                              propertyId={property.id}
+                              basePrice={property.price}
+                              priceType={property.price_type}
+                              minNights={1}
+                              maxNights={365}
+                              onDateSelect={(dates) => {
+                                console.log('📅 Checkout onDateSelect called', dates);
+                                setSelectedDates(dates);
+                              }}
+                              onApply={() => {
+                                console.log('📅 Checkout onApply called - closing popover');
+                                setCheckOutPopoverOpen(false);
+                              }}
+                            />
+                          </PopoverContent>
+                        </Popover>
+                      </div>
+
+                      {/* Guests selector */}
+                      <GuestsSelector
+                        value={guestCounts}
+                        onChange={(newCounts) => {
+                          console.log('👥 Guest counts updated', newCounts);
+                          setGuestCounts(newCounts);
+                        }}
+                        keepOpen={true}
+                      />
+
+                      {/* Pricing breakdown */}
+                      {pricingBreakdown && (
+                          <div className="p-3 rounded-lg bg-muted/50 space-y-2 text-sm">
+                          <div className="flex justify-between">
+                            <span>{pricingBreakdown.numberOfNights} nights</span>
+                            <span>{formatPrice(pricingBreakdown.baseTotal.toString(), property.price_type, property.price_currency || "DZD")}</span>
+                          </div>
+                          {pricingBreakdown.cleaningFee > 0 && (
+                            <div className="flex justify-between">
+                              <span>Cleaning fee</span>
+                              <span>{formatPrice(pricingBreakdown.cleaningFee.toString(), property.price_type, property.price_currency || "DZD")}</span>
+                            </div>
+                          )}
+                          {pricingBreakdown.serviceFee > 0 && (
+                            <div className="flex justify-between">
+                              <span>Service fee</span>
+                              <span>{formatPrice(pricingBreakdown.serviceFee.toString(), property.price_type, property.price_currency || "DZD")}</span>
+                            </div>
+                          )}
+                          <Separator />
+                          <div className="flex justify-between font-bold">
+                            <span>Total</span>
+                            <span>{formatPrice(pricingBreakdown.totalPrice.toString(), property.price_type, property.price_currency || "DZD")}</span>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Reserve button */}
+                      <Button
+                        className="w-full bg-gradient-to-r from-magenta-500 to-magenta-600 hover:from-magenta-600 hover:to-magenta-700 text-white font-semibold shadow-lg hover:-translate-y-0.5 transition-transform"
+                        size="lg"
+                        disabled={!selectedDates.checkIn || !selectedDates.checkOut || pricingLoading}
+                        onClick={() => {
+                          console.log('🎯 Reserve button clicked', {
+                            dates: selectedDates,
+                            guests: guestCounts,
+                            pricing: pricingBreakdown
+                          });
+                          navigate(`/booking/confirm/${property.id}`, {
+                            state: {
+                              checkIn: selectedDates.checkIn,
+                              checkOut: selectedDates.checkOut,
+                              guests: guestCounts,
+                              pricing: pricingBreakdown
+                            }
+                          });
+                        }}
+                      >
+                        {pricingLoading ? (
+                          <>
+                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                            Calculating...
+                          </>
+                        ) : (
+                          "Reserve"
+                        )}
                       </Button>
-                    }
-                  />
+                    </div>
+                  </>
                 ) : (
                   <Button
                     onClick={() => setIsScheduleModalOpen(true)}
