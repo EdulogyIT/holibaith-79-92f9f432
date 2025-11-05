@@ -193,34 +193,34 @@ const Messages = () => {
 
   useEffect(() => {
     if (isAuthenticated && user) {
-      fetchConversations();
-      
-      // Check for conversation ID in URL and auto-select it
-      const urlParams = new URLSearchParams(window.location.search);
-      const conversationId = urlParams.get('conversation');
-      
-      if (conversationId) {
-        // Auto-select the conversation from URL
-        setSelectedConversation(conversationId);
-        // Clear the URL parameter
-        window.history.replaceState({}, document.title, window.location.pathname);
-      } else if (urlParams.get('start') === 'true') {
-        // Auto-create conversation if coming from "Start Chat" and no conversations exist
-        window.history.replaceState({}, document.title, window.location.pathname);
+      fetchConversations().then(() => {
+        // Check for conversation ID in URL and auto-select it
+        const urlParams = new URLSearchParams(window.location.search);
+        const conversationId = urlParams.get('conversationId');
         
-        // Check if user has any conversations, if not create one
-        setTimeout(async () => {
-          const { data } = await supabase
-            .from('conversations')
-            .select('id')
-            .eq('user_id', user.id)
-            .limit(1);
+        if (conversationId) {
+          // Auto-select the conversation from URL
+          setSelectedConversation(conversationId);
+          // Clear the URL parameter
+          window.history.replaceState({}, document.title, window.location.pathname);
+        } else if (urlParams.get('start') === 'true') {
+          // Auto-create conversation if coming from "Start Chat" and no conversations exist
+          window.history.replaceState({}, document.title, window.location.pathname);
           
-          if (!data || data.length === 0) {
-            startNewConversation();
-          }
-        }, 1000);
-      }
+          // Check if user has any conversations, if not create one
+          setTimeout(async () => {
+            const { data } = await supabase
+              .from('conversations')
+              .select('id')
+              .eq('user_id', user.id)
+              .limit(1);
+            
+            if (!data || data.length === 0) {
+              startNewConversation();
+            }
+          }, 1000);
+        }
+      });
     }
     setLoading(false);
   }, [user, isAuthenticated]);

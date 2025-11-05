@@ -22,6 +22,7 @@ interface Property {
 
 interface MapboxPropertyMapProps {
   properties: Property[];
+  hoveredPropertyId?: string | null;
 }
 
 /** Tune clustering just for the bubbles (pills are independent of this). */
@@ -81,7 +82,7 @@ const spiderfy = (map: mapboxgl.Map, base: [number, number], n: number): [number
   return pts;
 };
 
-export const MapboxPropertyMap = ({ properties }: MapboxPropertyMapProps) => {
+export const MapboxPropertyMap = ({ properties, hoveredPropertyId }: MapboxPropertyMapProps) => {
   const mapEl = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
   const [isMapReady, setIsMapReady] = useState(false);
@@ -300,15 +301,29 @@ export const MapboxPropertyMap = ({ properties }: MapboxPropertyMapProps) => {
         const label = formatPrice(priceNum, p.price_type, p.price_currency || 'DZD');
 
         const el = document.createElement('div');
+        el.setAttribute('data-property-id', p.id);
+        const isHovered = hoveredPropertyId === p.id;
         el.style.cssText = `
           background:#FF385C;color:#fff;padding:6px 10px;border-radius:999px;
-          font-weight:700;font-size:12px;white-space:nowrap;box-shadow:0 2px 10px rgba(0,0,0,.25);
-          border:2px solid #fff;cursor:pointer;transition:box-shadow .15s ease;
+          font-weight:700;font-size:12px;white-space:nowrap;
+          border:2px solid #fff;cursor:pointer;
           pointer-events:auto;
+          transform: ${isHovered ? 'scale(1.15)' : 'scale(1)'};
+          box-shadow: ${isHovered ? '0 6px 20px rgba(255,56,92,.6)' : '0 2px 10px rgba(0,0,0,.25)'};
+          transition: all 0.2s ease;
+          z-index: ${isHovered ? '1000' : 'auto'};
         `;
         el.textContent = label;
-        el.onmouseenter = () => (el.style.boxShadow = '0 4px 16px rgba(255,56,92,.4)');
-        el.onmouseleave  = () => (el.style.boxShadow = '0 2px 10px rgba(0,0,0,.25)');
+        el.onmouseenter = () => {
+          el.style.transform = 'scale(1.15)';
+          el.style.boxShadow = '0 6px 20px rgba(255,56,92,.6)';
+        };
+        el.onmouseleave = () => {
+          if (hoveredPropertyId !== p.id) {
+            el.style.transform = 'scale(1)';
+            el.style.boxShadow = '0 2px 10px rgba(0,0,0,.25)';
+          }
+        };
         el.addEventListener('click', () => navigate(`/property/${p.id}`));
 
         const popup = new mapboxgl.Popup({ offset: 12 }).setHTML(`
@@ -343,6 +358,27 @@ export const MapboxPropertyMap = ({ properties }: MapboxPropertyMapProps) => {
       htmlMarkers.current = [];
     };
   }, [properties, isMapReady, formatPrice, navigate]);
+
+  // Update marker styles when hoveredPropertyId changes
+  useEffect(() => {
+    if (!isMapReady) return;
+
+    htmlMarkers.current.forEach(marker => {
+      const el = marker.getElement();
+      const propertyId = el.getAttribute('data-property-id');
+      const isHovered = propertyId === hoveredPropertyId;
+      
+      if (isHovered) {
+        el.style.transform = 'scale(1.15)';
+        el.style.boxShadow = '0 6px 20px rgba(255,56,92,.6)';
+        el.style.zIndex = '1000';
+      } else {
+        el.style.transform = 'scale(1)';
+        el.style.boxShadow = '0 2px 10px rgba(0,0,0,.25)';
+        el.style.zIndex = 'auto';
+      }
+    });
+  }, [hoveredPropertyId, isMapReady]);
 
   // Show error fallback if map failed to initialize
   if (mapError) {

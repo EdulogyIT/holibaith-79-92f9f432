@@ -112,46 +112,59 @@ export default function BookingConfirm() {
 
     setPricingLoading(true);
     
-    // Show estimated price immediately (base price * nights)
-    const nights = differenceInDays(validCheckOut, validCheckIn);
-    const estimatedTotal = Number(property.price) * nights;
-    setPricingBreakdown({
-      nights,
-      basePrice: Number(property.price),
-      subtotal: estimatedTotal,
-      total: estimatedTotal,
-      cleaningFee: 0,
-      serviceFee: 0,
-      nightlyRates: [],
-      lengthOfStayDiscount: null,
-      earlyBirdDiscount: null,
-      lastMinuteDiscount: null,
-      promotionalDiscount: null,
-      extraGuestFee: 0,
-      petFee: 0,
-      securityDeposit: 0,
-      serviceFeePercent: 0,
-      taxAmount: 0,
-      taxRate: 0,
-      totalBeforeTax: estimatedTotal,
-      savings: 0,
-    });
-
     try {
-      const breakdown = await calculateBookingPrice(
-        property.id,
-        validCheckIn,
-        validCheckOut,
-        guestsCount,
-        petsCount
-      );
-      setPricingBreakdown(breakdown);
+      // Show estimated price immediately (base price * nights)
+      const nights = differenceInDays(validCheckOut, validCheckIn);
+      const estimatedTotal = Number(property.price) * nights;
+      const estimatedServiceFee = estimatedTotal * 0.15;
+      
+      setPricingBreakdown({
+        nights,
+        basePrice: Number(property.price),
+        subtotal: estimatedTotal,
+        total: estimatedTotal + estimatedServiceFee,
+        cleaningFee: 0,
+        serviceFee: estimatedServiceFee,
+        nightlyRates: [],
+        lengthOfStayDiscount: null,
+        earlyBirdDiscount: null,
+        lastMinuteDiscount: null,
+        promotionalDiscount: null,
+        extraGuestFee: 0,
+        petFee: 0,
+        securityDeposit: 0,
+        serviceFeePercent: 15,
+        taxAmount: 0,
+        taxRate: 0,
+        totalBeforeTax: estimatedTotal + estimatedServiceFee,
+        savings: 0,
+      });
+
+      // Get detailed pricing from calculator
+      try {
+        const breakdown = await calculateBookingPrice(
+          property.id,
+          validCheckIn,
+          validCheckOut,
+          guestsCount,
+          petsCount
+        );
+        setPricingBreakdown(breakdown);
+      } catch (pricingError) {
+        console.error('Error calculating detailed pricing:', pricingError);
+        // Keep the estimated pricing
+        toast({
+          variant: 'default',
+          title: 'Using Estimated Pricing',
+          description: 'Unable to calculate exact fees. Showing base estimate.',
+        });
+      }
     } catch (error) {
       console.error('Error calculating pricing:', error);
       toast({
-        variant: 'default',
-        title: 'Using Estimated Pricing',
-        description: 'Unable to calculate exact fees. Showing base price.',
+        variant: 'destructive',
+        title: 'Pricing Error',
+        description: 'Unable to calculate pricing. Please try again.',
       });
     } finally {
       setPricingLoading(false);

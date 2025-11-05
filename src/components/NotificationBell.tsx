@@ -178,7 +178,7 @@ export const NotificationBell = () => {
     
     // Navigate based on notification type
     if (notification.type === 'message') {
-      navigate('/messages');
+      navigate(`/messages?conversationId=${notification.related_id}`);
     } else if (notification.type === 'property_approval' || notification.type === 'property_rejection' || notification.type === 'property_approved') {
       navigate('/host/listings');
     } else if (notification.type === 'withdrawal_approved' || notification.type === 'withdrawal_rejected') {

@@ -522,7 +522,7 @@ const PropertyEnhanced = () => {
               <div>
                   <div className="flex items-start sm:items-baseline justify-between gap-3 mb-2">
                     <div className="text-2xl sm:text-3xl font-bold text-primary break-words">
-                      {formatPrice(parseFloat(property.price), isShortStay ? "per_night" : property.price_type, property.price_currency || "DZD")}
+                      {formatPrice(parseFloat(property.price), isShortStay ? "daily" : property.price_type, property.price_currency || "DZD")}
                     </div>
                   <div className="shrink-0">
                     <CurrencySelector />

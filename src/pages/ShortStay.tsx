@@ -83,6 +83,7 @@ const ShortStay = () => {
   const [filteredProperties, setFilteredProperties] = useState<Property[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [hasActiveFilters, setHasActiveFilters] = useState(false);
+  const [hoveredPropertyId, setHoveredPropertyId] = useState<string | null>(null);
 
   useScrollToTop();
 
@@ -175,7 +176,12 @@ const ShortStay = () => {
     }, [emblaApi]);
 
     return (
-      <div className="cursor-pointer group" onClick={() => navigate(`/property/${property.id}`)}>
+      <div 
+        className="cursor-pointer group" 
+        onClick={() => navigate(`/property/${property.id}`)}
+        onMouseEnter={() => setHoveredPropertyId(property.id)}
+        onMouseLeave={() => setHoveredPropertyId(null)}
+      >
         <Card className="bg-transparent shadow-none border-0">
           <div className="relative w-full rounded-2xl overflow-hidden aspect-[4/3] md:aspect-[5/4]">
             <div className="embla w-full h-full" ref={emblaRef}>
@@ -236,7 +242,7 @@ const ShortStay = () => {
           {/* Price first on mobile */}
           <div className="mb-2 md:hidden">
             <div className="text-xl font-bold">
-              {formatPrice(num(property.price), "per_night", property.price_currency)}
+              {formatPrice(num(property.price), "daily", property.price_currency)}
             </div>
           </div>
 
@@ -252,7 +258,7 @@ const ShortStay = () => {
           
           {/* Price on desktop (original position) */}
           <div className="mt-1 text-lg md:text-xl font-bold hidden md:block">
-            {formatPrice(num(property.price), "per_night", property.price_currency)}
+            {formatPrice(num(property.price), "daily", property.price_currency)}
           </div>
           <div className="mt-1.5 flex items-center gap-4 text-muted-foreground text-xs">
             {property.bedrooms && (
@@ -367,7 +373,7 @@ const ShortStay = () => {
                 }
               >
                 <div className="sticky top-24 rounded-2xl overflow-hidden ring-1 ring-border h-[calc(100vh-7rem)]">
-                  <MapboxPropertyMap properties={filteredProperties || []} />
+                  <MapboxPropertyMap properties={filteredProperties || []} hoveredPropertyId={hoveredPropertyId} />
                 </div>
               </LocalErrorBoundary>
             </div>
