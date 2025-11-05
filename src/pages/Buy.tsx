@@ -38,6 +38,8 @@ interface Property {
   images: string[] | null;
   property_type: string;
   is_verified?: boolean;
+  latitude?: number;
+  longitude?: number;
 }
 
 /** ---------- Utils ---------- */

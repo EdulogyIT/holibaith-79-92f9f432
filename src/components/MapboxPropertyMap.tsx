@@ -160,10 +160,21 @@ export const MapboxPropertyMap = ({ properties, hoveredPropertyId }: MapboxPrope
     htmlMarkers.current.forEach(mm => mm.remove());
     htmlMarkers.current = [];
 
+    // Validate coordinates are within Algeria's bounds
+    const isValidCoord = (lat: number, lng: number) => {
+      return lat >= 18 && lat <= 37 && lng >= -9 && lng <= 12;
+    };
+
     // Place each property at its exact coordinates
     properties.forEach((p) => {
       const lat = p.latitude ?? cityLL(p.city).lat;
       const lng = p.longitude ?? cityLL(p.city).lng;
+
+      // Skip markers with invalid coordinates
+      if (!isValidCoord(lat, lng)) {
+        console.warn(`Invalid coordinates for property ${p.id}:`, { lat, lng, city: p.city });
+        return;
+      }
         const priceNum = typeof p.price === 'number' ? p.price : parseFloat(String(p.price));
         const label = formatPrice(priceNum, p.price_type, p.price_currency || 'DZD');
 
@@ -211,9 +222,10 @@ export const MapboxPropertyMap = ({ properties, hoveredPropertyId }: MapboxPrope
           .setLngLat([lng, lat])
           .addTo(m);
 
-        // Show popup on hover, hide on mouse leave
+        // Show popup on hover using marker's current position
         el.addEventListener('mouseenter', () => {
-          popup.setLngLat([lng, lat]).addTo(m);
+          const currentPos = marker.getLngLat();
+          popup.setLngLat(currentPos).addTo(m);
         });
         el.addEventListener('mouseleave', () => {
           popup.remove();
