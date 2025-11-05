@@ -663,14 +663,20 @@ const PropertyEnhanced = () => {
                             guests: guestCounts,
                             pricing: pricingBreakdown
                           });
-                          navigate(`/booking/confirm/${property.id}`, {
-                            state: {
-                              checkIn: selectedDates.checkIn,
-                              checkOut: selectedDates.checkOut,
-                              guests: guestCounts,
-                              pricing: pricingBreakdown
-                            }
+                          
+                          // Build URL with query params for dates and guests
+                          const checkInStr = selectedDates.checkIn ? format(selectedDates.checkIn, 'yyyy-MM-dd') : '';
+                          const checkOutStr = selectedDates.checkOut ? format(selectedDates.checkOut, 'yyyy-MM-dd') : '';
+                          const totalGuests = (guestCounts.adults || 1) + (guestCounts.children || 0) + (guestCounts.infants || 0);
+                          
+                          const params = new URLSearchParams({
+                            checkIn: checkInStr,
+                            checkOut: checkOutStr,
+                            guests: totalGuests.toString(),
+                            pets: (guestCounts.pets || 0).toString()
                           });
+                          
+                          navigate(`/booking/confirm/${property.id}?${params.toString()}`);
                         }}
                       >
                         {pricingLoading ? (

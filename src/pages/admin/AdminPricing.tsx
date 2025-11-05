@@ -9,8 +9,9 @@ import { supabase } from '@/integrations/supabase/client';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useCurrency } from '@/contexts/CurrencyContext';
 import { toast } from 'sonner';
-import { TrendingUp, DollarSign, Filter, Download } from 'lucide-react';
+import { TrendingUp, DollarSign, Filter, Download, Settings } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { PropertyFeesDialog } from '@/components/admin/PropertyFeesDialog';
 
 interface PropertyPricing {
   id: string;
@@ -30,6 +31,8 @@ export default function AdminPricing() {
   const [loading, setLoading] = useState(true);
   const [filterCategory, setFilterCategory] = useState<string>('all');
   const [filterStatus, setFilterStatus] = useState<string>('all');
+  const [selectedPropertyForFees, setSelectedPropertyForFees] = useState<any>(null);
+  const [isFeesDialogOpen, setIsFeesDialogOpen] = useState(false);
 
   useEffect(() => {
     fetchProperties();
@@ -239,6 +242,7 @@ export default function AdminPricing() {
                 <TableHead>Category</TableHead>
                 <TableHead>Commission</TableHead>
                 <TableHead>Status</TableHead>
+                <TableHead>Fees</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -261,6 +265,19 @@ export default function AdminPricing() {
                     </Badge>
                   </TableCell>
                   <TableCell>
+                    <Button 
+                      size="sm" 
+                      variant="outline"
+                      onClick={() => {
+                        setSelectedPropertyForFees(property);
+                        setIsFeesDialogOpen(true);
+                      }}
+                    >
+                      <Settings className="h-4 w-4 mr-1" />
+                      Manage
+                    </Button>
+                  </TableCell>
+                  <TableCell>
                     <Button size="sm" variant="ghost" onClick={() => window.location.href = `/property/${property.id}`}>
                       View
                     </Button>
@@ -271,6 +288,16 @@ export default function AdminPricing() {
           </Table>
         </CardContent>
       </Card>
+
+      {/* Property Fees Dialog */}
+      {selectedPropertyForFees && (
+        <PropertyFeesDialog
+          property={selectedPropertyForFees}
+          open={isFeesDialogOpen}
+          onOpenChange={setIsFeesDialogOpen}
+          onUpdate={fetchProperties}
+        />
+      )}
     </div>
   );
 }

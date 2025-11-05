@@ -236,7 +236,7 @@ const ShortStay = () => {
           {/* Price first on mobile */}
           <div className="mb-2 md:hidden">
             <div className="text-xl font-bold">
-              {formatPrice(num(property.price), property.price_type, property.price_currency)}
+              {formatPrice(num(property.price), "per_night", property.price_currency)}
             </div>
           </div>
 
@@ -252,7 +252,7 @@ const ShortStay = () => {
           
           {/* Price on desktop (original position) */}
           <div className="mt-1 text-lg md:text-xl font-bold hidden md:block">
-            {formatPrice(num(property.price), property.price_type, property.price_currency)}
+            {formatPrice(num(property.price), "per_night", property.price_currency)}
           </div>
           <div className="mt-1.5 flex items-center gap-4 text-muted-foreground text-xs">
             {property.bedrooms && (

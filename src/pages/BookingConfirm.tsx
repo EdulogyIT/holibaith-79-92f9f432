@@ -47,23 +47,30 @@ export default function BookingConfirm() {
   const [pricingLoading, setPricingLoading] = useState(false);
 
   // Get booking context from URL with better validation
-  const checkInDate = searchParams.get('checkIn') ? new Date(searchParams.get('checkIn')!) : undefined;
-  const checkOutDate = searchParams.get('checkOut') ? new Date(searchParams.get('checkOut')!) : undefined;
+  const checkInParam = searchParams.get('checkIn');
+  const checkOutParam = searchParams.get('checkOut');
+  
+  const checkInDate = checkInParam && checkInParam !== 'undefined' ? new Date(checkInParam) : undefined;
+  const checkOutDate = checkOutParam && checkOutParam !== 'undefined' ? new Date(checkOutParam) : undefined;
   const guestsCount = parseInt(searchParams.get('guests') || '1');
   const petsCount = parseInt(searchParams.get('pets') || '0');
+
+  // Validate dates are valid Date objects
+  const validCheckIn = checkInDate && !isNaN(checkInDate.getTime()) ? checkInDate : undefined;
+  const validCheckOut = checkOutDate && !isNaN(checkOutDate.getTime()) ? checkOutDate : undefined;
 
   // Debug logging for booking parameters
   useEffect(() => {
     console.log('📅 BookingConfirm URL Params:', {
-      checkIn: searchParams.get('checkIn'),
-      checkOut: searchParams.get('checkOut'),
-      checkInDate,
-      checkOutDate,
+      rawCheckIn: searchParams.get('checkIn'),
+      rawCheckOut: searchParams.get('checkOut'),
+      validCheckIn,
+      validCheckOut,
       guestsCount,
       petsCount,
-      isValidDates: checkInDate && checkOutDate && !isNaN(checkInDate.getTime()) && !isNaN(checkOutDate.getTime())
+      hasDates: !!validCheckIn && !!validCheckOut
     });
-  }, [searchParams, checkInDate, checkOutDate, guestsCount, petsCount]);
+  }, [searchParams, validCheckIn, validCheckOut, guestsCount, petsCount]);
 
   useEffect(() => {
     if (propertyId) {
@@ -72,10 +79,10 @@ export default function BookingConfirm() {
   }, [propertyId]);
 
   useEffect(() => {
-    if (property && checkInDate && checkOutDate && guestsCount) {
+    if (property && validCheckIn && validCheckOut && guestsCount) {
       calculatePricing();
     }
-  }, [property, checkInDate, checkOutDate, guestsCount, petsCount]);
+  }, [property, validCheckIn, validCheckOut, guestsCount, petsCount]);
 
   const fetchProperty = async () => {
     try {
@@ -101,12 +108,12 @@ export default function BookingConfirm() {
 
   // Calculate pricing using comprehensive calculator
   const calculatePricing = async () => {
-    if (!property || !checkInDate || !checkOutDate) return;
+    if (!property || !validCheckIn || !validCheckOut) return;
 
     setPricingLoading(true);
     
     // Show estimated price immediately (base price * nights)
-    const nights = differenceInDays(checkOutDate, checkInDate);
+    const nights = differenceInDays(validCheckOut, validCheckIn);
     const estimatedTotal = Number(property.price) * nights;
     setPricingBreakdown({
       nights,
@@ -133,8 +140,8 @@ export default function BookingConfirm() {
     try {
       const breakdown = await calculateBookingPrice(
         property.id,
-        checkInDate,
-        checkOutDate,
+        validCheckIn,
+        validCheckOut,
         guestsCount,
         petsCount
       );
@@ -154,7 +161,7 @@ export default function BookingConfirm() {
   const propertyCurrency = property?.price_currency || 'EUR';
 
   const handlePayBooking = async () => {
-    if (!property || !checkInDate || !checkOutDate || !pricingBreakdown) return;
+    if (!property || !validCheckIn || !validCheckOut || !pricingBreakdown) return;
 
     setIsProcessing(true);
     try {
@@ -166,8 +173,8 @@ export default function BookingConfirm() {
           currency: propertyCurrency,
           description: `Booking fee for ${property.title}`,
           bookingData: {
-            checkInDate: format(checkInDate, 'yyyy-MM-dd'),
-            checkOutDate: format(checkOutDate, 'yyyy-MM-dd'),
+            checkInDate: format(validCheckIn, 'yyyy-MM-dd'),
+            checkOutDate: format(validCheckOut, 'yyyy-MM-dd'),
             guestsCount,
             specialRequests,
             contactPhone,
@@ -358,8 +365,8 @@ export default function BookingConfirm() {
                     <div className="flex items-center gap-2 text-sm">
                       <Calendar className="w-4 h-4" />
                       <span>
-                        {checkInDate && checkOutDate
-                          ? `${format(checkInDate, 'MMM dd')} - ${format(checkOutDate, 'MMM dd, yyyy')}`
+                        {validCheckIn && validCheckOut
+                          ? `${format(validCheckIn, 'MMM dd')} - ${format(validCheckOut, 'MMM dd, yyyy')}`
                           : 'Dates not selected'}
                       </span>
                     </div>

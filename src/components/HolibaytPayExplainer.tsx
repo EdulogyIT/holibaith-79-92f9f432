@@ -60,7 +60,7 @@ export const HolibaytPayExplainer = ({ category }: HolibaytPayExplainerProps) =>
           </ul>
           
           <Button
-            onClick={() => navigate("/holibayt-pay")}
+            onClick={() => navigate("/about#holibayt-pay")}
             className="mt-4 hover:-translate-y-0.5 transition-transform text-sm sm:text-base w-full sm:w-auto"
           >
             {t('learnMore')} {t('aboutHolibaytPay')}
