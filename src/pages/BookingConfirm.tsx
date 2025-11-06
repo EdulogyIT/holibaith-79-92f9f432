@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -53,17 +53,23 @@ export default function BookingConfirm() {
   );
 
   // Get booking context from URL with better validation
-  const checkInParam = searchParams.get('checkIn');
-  const checkOutParam = searchParams.get('checkOut');
-  
-  const checkInDate = checkInParam && checkInParam !== 'undefined' ? new Date(checkInParam) : undefined;
-  const checkOutDate = checkOutParam && checkOutParam !== 'undefined' ? new Date(checkOutParam) : undefined;
   const guestsCount = parseInt(searchParams.get('guests') || '1');
   const petsCount = parseInt(searchParams.get('pets') || '0');
 
-  // Validate dates are valid Date objects
-  const validCheckIn = checkInDate && !isNaN(checkInDate.getTime()) ? checkInDate : undefined;
-  const validCheckOut = checkOutDate && !isNaN(checkOutDate.getTime()) ? checkOutDate : undefined;
+  // Memoize date objects to prevent infinite useEffect loop
+  const validCheckIn = useMemo(() => {
+    const checkInParam = searchParams.get('checkIn');
+    if (!checkInParam || checkInParam === 'undefined') return undefined;
+    const date = new Date(checkInParam);
+    return isNaN(date.getTime()) ? undefined : date;
+  }, [searchParams.get('checkIn')]);
+  
+  const validCheckOut = useMemo(() => {
+    const checkOutParam = searchParams.get('checkOut');
+    if (!checkOutParam || checkOutParam === 'undefined') return undefined;
+    const date = new Date(checkOutParam);
+    return isNaN(date.getTime()) ? undefined : date;
+  }, [searchParams.get('checkOut')]);
 
   // Debug logging for booking parameters
   useEffect(() => {
@@ -88,7 +94,7 @@ export default function BookingConfirm() {
     if (property && validCheckIn && validCheckOut && guestsCount) {
       calculatePricing();
     }
-  }, [property, validCheckIn, validCheckOut, guestsCount, petsCount]);
+  }, [property, validCheckIn, validCheckOut, guestsCount, petsCount, useEstimatedPricing]);
 
   // HARD TIMEOUT - Emergency safety net (30 seconds max)
   useEffect(() => {
