@@ -138,7 +138,7 @@ export const PricingFeesSection = ({ propertyId }: PricingFeesSectionProps) => {
               }
               placeholder="0.00"
             />
-            <p className="text-xs text-muted-foreground">Refundable, held in escrow</p>
+            <p className="text-xs text-muted-foreground">Held securely during stay, refunded within 7 days after checkout if no damages</p>
           </div>
 
           <div className="space-y-2">

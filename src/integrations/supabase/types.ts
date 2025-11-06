@@ -1045,6 +1045,36 @@ export type Database = {
           },
         ]
       }
+      platform_service_fees: {
+        Row: {
+          category: string
+          created_at: string | null
+          fee_percentage: number
+          fee_type: string
+          id: string
+          is_active: boolean | null
+          updated_at: string | null
+        }
+        Insert: {
+          category: string
+          created_at?: string | null
+          fee_percentage?: number
+          fee_type?: string
+          id?: string
+          is_active?: boolean | null
+          updated_at?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string | null
+          fee_percentage?: number
+          fee_type?: string
+          id?: string
+          is_active?: boolean | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       platform_settings: {
         Row: {
           created_at: string | null

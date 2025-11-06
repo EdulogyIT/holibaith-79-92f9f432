@@ -38,6 +38,7 @@ export const HostPricingManagement = () => {
   const [loading, setLoading] = useState(true);
   const [property, setProperty] = useState<any>(null);
   const [weekendMultiplier, setWeekendMultiplier] = useState(1.0);
+  const [platformServiceFee, setPlatformServiceFee] = useState<number>(15);
   
   // New seasonal price form
   const [newSeason, setNewSeason] = useState<SeasonalPrice>({
@@ -60,15 +61,28 @@ export const HostPricingManagement = () => {
 
   const fetchPricingData = async () => {
     try {
-      // Fetch base price
+      // Fetch base price and category
       const { data: property, error: propError } = await supabase
         .from('properties')
-        .select('price')
+        .select('price, category')
         .eq('id', propertyId)
         .single();
 
       if (propError) throw propError;
+      setProperty(property);
       setBasePrice(property?.price || '');
+      
+      // Fetch platform service fee based on category
+      const { data: serviceFeeData } = await supabase
+        .from('platform_service_fees')
+        .select('fee_percentage')
+        .eq('category', property?.category || 'short-stay')
+        .eq('is_active', true)
+        .maybeSingle();
+      
+      if (serviceFeeData) {
+        setPlatformServiceFee(serviceFeeData.fee_percentage);
+      }
 
       // Fetch seasonal pricing
       const { data: seasonal, error: seasonError } = await supabase
@@ -369,6 +383,32 @@ export const HostPricingManagement = () => {
         rules={pricingRules}
         onUpdate={fetchPricingData}
       />
+
+      {/* Platform Service Fee Display (Read-only) */}
+      <Card className="border-primary/20 bg-muted/30">
+        <CardHeader>
+          <CardTitle className="text-lg flex items-center gap-2">
+            <DollarSign className="h-5 w-5" />
+            Platform Service Fee
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="flex items-center justify-between p-4 bg-background rounded-lg border">
+            <div>
+              <p className="font-semibold">Service Fee Rate</p>
+              <p className="text-sm text-muted-foreground">Applied to all guest bookings</p>
+            </div>
+            <Badge variant="secondary" className="text-lg px-4 py-2">
+              {platformServiceFee}%
+            </Badge>
+          </div>
+          <div className="text-sm text-muted-foreground space-y-1">
+            <p>• This fee is charged to guests in addition to the property price</p>
+            <p>• Service fees help maintain and improve the platform</p>
+            <p>• Set by platform administrators for all properties</p>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Fees and Charges */}
       <PricingFeesSection propertyId={propertyId!} />

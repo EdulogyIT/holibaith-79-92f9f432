@@ -39,7 +39,7 @@ export const calculateBookingPrice = async (
     
     const { data: property, error: propertyError } = await supabase
       .from('properties')
-      .select('price, commission_rate')
+      .select('price, category')
       .eq('id', propertyId)
       .maybeSingle();
 
@@ -51,8 +51,17 @@ export const calculateBookingPrice = async (
     }
 
     const basePrice = parseFloat(property.price);
-    const commissionRate = property.commission_rate || 0.15;
-    console.log('💰 [PricingCalc] Base price:', basePrice, 'Commission:', commissionRate);
+    
+    // Fetch platform service fee based on property category
+    const { data: serviceFeeSettings } = await supabase
+      .from('platform_service_fees')
+      .select('fee_percentage')
+      .eq('category', property.category || 'short-stay')
+      .eq('is_active', true)
+      .maybeSingle();
+    
+    const serviceFeePercent = serviceFeeSettings?.fee_percentage || 15;
+    console.log('💰 [PricingCalc] Base price:', basePrice, 'Service Fee:', serviceFeePercent + '%');
 
     // 2. Calculate nights
     const nights = differenceInDays(checkOutDate, checkInDate);
@@ -111,7 +120,7 @@ export const calculateBookingPrice = async (
       
       // IMMEDIATE FALLBACK - Return simple pricing
       const simpleSubtotal = basePrice * nights;
-      const simpleServiceFee = simpleSubtotal * commissionRate;
+      const simpleServiceFee = simpleSubtotal * (serviceFeePercent / 100);
       const simpleTotal = simpleSubtotal + simpleServiceFee;
       
       console.log('🔄 [PricingCalc] Using simple fallback pricing:', { simpleTotal });
@@ -130,7 +139,7 @@ export const calculateBookingPrice = async (
         petFee: 0,
         securityDeposit: 0,
         serviceFee: simpleServiceFee,
-        serviceFeePercent: commissionRate * 100,
+        serviceFeePercent: serviceFeePercent,
         taxAmount: 0,
         taxRate: 0,
         totalBeforeTax: simpleTotal,
@@ -249,8 +258,8 @@ export const calculateBookingPrice = async (
         ? petCount * parseFloat(fees.pet_fee.toString())
         : 0;
 
-    // 14. Calculate service fee (commission)
-    const serviceFee = subtotal * commissionRate;
+    // 14. Calculate service fee (from platform settings)
+    const serviceFee = subtotal * (serviceFeePercent / 100);
 
     // 15. Calculate tax
     const taxRate = fees?.tax_rate ? parseFloat(fees.tax_rate.toString()) : 0;
@@ -293,7 +302,7 @@ export const calculateBookingPrice = async (
       petFee,
       securityDeposit,
       serviceFee,
-      serviceFeePercent: commissionRate * 100,
+      serviceFeePercent: serviceFeePercent,
       taxAmount,
       taxRate,
       totalBeforeTax,

@@ -157,7 +157,7 @@ const PublishPropertySteps = ({ onSubmit, isSubmitting = false }: PublishPropert
     floor: "",
     price: "",
     priceType: "",
-    priceCurrency: "EUR",
+    priceCurrency: "USD",
     checkInTime: "15:00",
     checkOutTime: "11:00",
     furnishing: "",

@@ -348,7 +348,7 @@ export default function BookingConfirm() {
     });
   };
 
-  const propertyCurrency = property?.price_currency || 'EUR';
+  const propertyCurrency = property?.price_currency || 'USD';
 
   const handlePayBooking = async () => {
     if (!property || !validCheckIn || !validCheckOut || !pricingBreakdown) return;
@@ -664,7 +664,9 @@ export default function BookingConfirm() {
                             <span className="font-medium">Security Deposit (refundable)</span>
                             <span className="font-medium">{formatPrice(pricingBreakdown.securityDeposit, undefined, propertyCurrency)}</span>
                           </div>
-                          <p className="text-xs text-muted-foreground mt-1">Held in escrow, refunded after checkout</p>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            Held securely during your stay, automatically refunded within 7 days after checkout if no damages are reported
+                          </p>
                         </div>
                       )}
                     </>
