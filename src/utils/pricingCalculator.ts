@@ -30,53 +30,63 @@ export const calculateBookingPrice = async (
   guestCount: number,
   petCount: number = 0
 ): Promise<PricingBreakdown> => {
+  console.log('🔍 [PricingCalc] Starting calculation...', { propertyId, guestCount, petCount });
+  
   try {
     // 1. Fetch property details
+    console.log('📊 [PricingCalc] Step 1: Fetching property...');
+    const propertyStart = Date.now();
+    
     const { data: property, error: propertyError } = await supabase
       .from('properties')
       .select('price, commission_rate')
       .eq('id', propertyId)
       .maybeSingle();
 
+    console.log(`✅ [PricingCalc] Property fetched in ${Date.now() - propertyStart}ms`);
+
     if (propertyError || !property) {
-      console.error('Property fetch error:', propertyError);
+      console.error('❌ [PricingCalc] Property fetch error:', propertyError);
       throw new Error('Property not found');
     }
 
     const basePrice = parseFloat(property.price);
     const commissionRate = property.commission_rate || 0.15;
+    console.log('💰 [PricingCalc] Base price:', basePrice, 'Commission:', commissionRate);
 
     // 2. Calculate nights
     const nights = differenceInDays(checkOutDate, checkInDate);
     if (nights < 1) throw new Error('Invalid date range');
+    console.log('📅 [PricingCalc] Nights:', nights);
 
-    // 3. Fetch seasonal pricing (with timeout protection)
+    // 3. Fetch pricing data with 5s timeout
+    console.log('🔄 [PricingCalc] Step 2: Fetching pricing data...');
+    const fetchStart = Date.now();
+    
     const seasonalPromise = supabase
       .from('property_seasonal_pricing')
       .select('*')
       .eq('property_id', propertyId)
       .order('start_date')
-      .then(result => result); // Convert to actual Promise
+      .then(result => result);
 
-    // 4. Fetch pricing fees (with timeout protection)
     const feesPromise = supabase
       .from('pricing_fees')
       .select('*')
       .eq('property_id', propertyId)
       .maybeSingle()
-      .then(result => result); // Convert to actual Promise
+      .then(result => result);
 
-    // 5. Fetch active pricing rules (with timeout protection)
     const rulesPromise = supabase
       .from('pricing_rules')
       .select('*')
       .eq('property_id', propertyId)
       .eq('is_active', true)
-      .then(result => result); // Convert to actual Promise
+      .then(result => result);
 
-    // Fetch all in parallel with 10 second timeout
+    // 5-second timeout for database queries
     const timeout = new Promise((_, reject) => 
-      setTimeout(() => reject(new Error('Pricing fetch timeout (10s)')), 10000)
+      setTimeout(() => reject(new Error('Database timeout (5s)')), 5000)
     );
 
     let seasonalPrices, fees, rules;
@@ -87,18 +97,50 @@ export const calculateBookingPrice = async (
         timeout
       ]) as any;
 
-      seasonalPrices = seasonalResult?.data;
+      seasonalPrices = seasonalResult?.data || [];
       fees = feesResult?.data;
-      rules = rulesResult?.data;
+      rules = rulesResult?.data || [];
+      
+      console.log(`✅ [PricingCalc] Data fetched in ${Date.now() - fetchStart}ms`, {
+        seasonalCount: seasonalPrices?.length || 0,
+        hasFees: !!fees,
+        rulesCount: rules?.length || 0
+      });
     } catch (timeoutError) {
-      console.error('Database queries timed out:', timeoutError);
-      // Use default values when timeout occurs
-      seasonalPrices = [];
-      fees = null;
-      rules = [];
+      console.error(`⚠️ [PricingCalc] Database timeout after ${Date.now() - fetchStart}ms:`, timeoutError);
+      
+      // IMMEDIATE FALLBACK - Return simple pricing
+      const simpleSubtotal = basePrice * nights;
+      const simpleServiceFee = simpleSubtotal * commissionRate;
+      const simpleTotal = simpleSubtotal + simpleServiceFee;
+      
+      console.log('🔄 [PricingCalc] Using simple fallback pricing:', { simpleTotal });
+      
+      return {
+        nights,
+        basePrice,
+        nightlyRates: [],
+        subtotal: simpleSubtotal,
+        lengthOfStayDiscount: null,
+        earlyBirdDiscount: null,
+        lastMinuteDiscount: null,
+        promotionalDiscount: null,
+        cleaningFee: 0,
+        extraGuestFee: 0,
+        petFee: 0,
+        securityDeposit: 0,
+        serviceFee: simpleServiceFee,
+        serviceFeePercent: commissionRate * 100,
+        taxAmount: 0,
+        taxRate: 0,
+        totalBeforeTax: simpleTotal,
+        total: simpleTotal,
+        savings: 0,
+      };
     }
 
-    // 6. Calculate nightly rates with seasonal and weekend adjustments
+    // 6. Calculate nightly rates
+    console.log('🧮 [PricingCalc] Step 3: Calculating nightly rates...');
     const nightlyRates: { date: string; rate: number; isWeekend: boolean }[] = [];
     let subtotal = 0;
 
@@ -108,17 +150,13 @@ export const calculateBookingPrice = async (
       const dateStr = currentDate.toISOString().split('T')[0];
       const isWeekendDay = isWeekend(currentDate);
 
-      // Find applicable seasonal price
       let nightRate = basePrice;
       const applicableSeason = seasonalPrices?.find(
-        (season) =>
-          dateStr >= season.start_date && dateStr <= season.end_date
+        (season) => dateStr >= season.start_date && dateStr <= season.end_date
       );
 
       if (applicableSeason) {
         nightRate = parseFloat(applicableSeason.price_per_night.toString());
-        
-        // Apply weekend multiplier if it's a weekend
         if (isWeekendDay && applicableSeason.weekend_multiplier) {
           nightRate *= parseFloat(applicableSeason.weekend_multiplier.toString());
         }
@@ -127,6 +165,8 @@ export const calculateBookingPrice = async (
       nightlyRates.push({ date: dateStr, rate: nightRate, isWeekend: isWeekendDay });
       subtotal += nightRate;
     }
+    
+    console.log('✅ [PricingCalc] Subtotal before discounts:', subtotal);
 
     // 7. Apply length-of-stay discounts
     let lengthOfStayDiscount = null;
@@ -229,6 +269,15 @@ export const calculateBookingPrice = async (
       (earlyBirdDiscount?.amount || 0) +
       (lastMinuteDiscount?.amount || 0) +
       (promotionalDiscount?.amount || 0);
+
+    console.log('✅ [PricingCalc] Calculation complete!', { 
+      subtotal, 
+      fees: cleaningFee + extraGuestFee + petFee, 
+      serviceFee, 
+      taxAmount, 
+      total,
+      savings 
+    });
 
     return {
       nights,

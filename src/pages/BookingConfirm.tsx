@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Calendar, Users, CreditCard, MapPin, Home, Loader2 } from 'lucide-react';
+import { LoadingTimeout } from '@/components/LoadingTimeout';
 import { format, differenceInDays } from 'date-fns';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -46,6 +47,10 @@ export default function BookingConfirm() {
   const [pricingBreakdown, setPricingBreakdown] = useState<any>(null);
   const [pricingLoading, setPricingLoading] = useState(false);
   const [hasShownEstimateToast, setHasShownEstimateToast] = useState(false);
+  const [pricingElapsedTime, setPricingElapsedTime] = useState(0);
+  const [useEstimatedPricing, setUseEstimatedPricing] = useState(
+    searchParams.get('useEstimatedPricing') === 'true'
+  );
 
   // Get booking context from URL with better validation
   const checkInParam = searchParams.get('checkIn');
@@ -85,6 +90,72 @@ export default function BookingConfirm() {
     }
   }, [property, validCheckIn, validCheckOut, guestsCount, petsCount]);
 
+  // HARD TIMEOUT - Emergency safety net (30 seconds max)
+  useEffect(() => {
+    if (!pricingLoading) {
+      setPricingElapsedTime(0);
+      return;
+    }
+
+    console.log('⏱️ [BookingConfirm] Starting pricing timer...');
+    const startTime = Date.now();
+    
+    const interval = setInterval(() => {
+      const elapsed = Math.floor((Date.now() - startTime) / 1000);
+      setPricingElapsedTime(elapsed);
+      
+      // Force stop after 30 seconds
+      if (elapsed >= 30) {
+        console.error('🚨 [BookingConfirm] HARD TIMEOUT at 30s - forcing estimated pricing');
+        setPricingLoading(false);
+        setPricingElapsedTime(0);
+        clearInterval(interval);
+        
+        if (!pricingBreakdown) {
+          // Emergency fallback
+          const nights = validCheckIn && validCheckOut 
+            ? differenceInDays(validCheckOut, validCheckIn) 
+            : 1;
+          const estimatedTotal = Number(property?.price || 0) * nights;
+          const estimatedServiceFee = estimatedTotal * 0.15;
+          
+          setPricingBreakdown({
+            nights,
+            basePrice: Number(property?.price || 0),
+            subtotal: estimatedTotal,
+            total: estimatedTotal + estimatedServiceFee,
+            cleaningFee: 0,
+            serviceFee: estimatedServiceFee,
+            nightlyRates: [],
+            lengthOfStayDiscount: null,
+            earlyBirdDiscount: null,
+            lastMinuteDiscount: null,
+            promotionalDiscount: null,
+            extraGuestFee: 0,
+            petFee: 0,
+            securityDeposit: 0,
+            serviceFeePercent: 15,
+            taxAmount: 0,
+            taxRate: 0,
+            totalBeforeTax: estimatedTotal + estimatedServiceFee,
+            savings: 0,
+          });
+        }
+        
+        toast({
+          variant: 'default',
+          title: 'Using Estimated Pricing',
+          description: 'Calculation took too long. Using estimated price.',
+        });
+      }
+    }, 1000);
+
+    return () => {
+      clearInterval(interval);
+      setPricingElapsedTime(0);
+    };
+  }, [pricingLoading, property, validCheckIn, validCheckOut]);
+
   const fetchProperty = async () => {
     try {
       const { data, error } = await supabase
@@ -107,14 +178,49 @@ export default function BookingConfirm() {
     }
   };
 
-  // Calculate pricing using comprehensive calculator
+  // Calculate pricing with emergency fallback
   const calculatePricing = async () => {
     if (!property || !validCheckIn || !validCheckOut) return;
 
+    console.log('🚀 [BookingConfirm] Starting pricing calculation...');
+    
+    // Check if emergency bypass mode is active
+    if (useEstimatedPricing) {
+      console.log('⚡ [BookingConfirm] Using estimated pricing (bypass mode)');
+      const nights = differenceInDays(validCheckOut, validCheckIn);
+      const estimatedTotal = Number(property.price) * nights;
+      const estimatedServiceFee = estimatedTotal * 0.15;
+      
+      setPricingBreakdown({
+        nights,
+        basePrice: Number(property.price),
+        subtotal: estimatedTotal,
+        total: estimatedTotal + estimatedServiceFee,
+        cleaningFee: 0,
+        serviceFee: estimatedServiceFee,
+        nightlyRates: [],
+        lengthOfStayDiscount: null,
+        earlyBirdDiscount: null,
+        lastMinuteDiscount: null,
+        promotionalDiscount: null,
+        extraGuestFee: 0,
+        petFee: 0,
+        securityDeposit: 0,
+        serviceFeePercent: 15,
+        taxAmount: 0,
+        taxRate: 0,
+        totalBeforeTax: estimatedTotal + estimatedServiceFee,
+        savings: 0,
+      });
+      return;
+    }
+
     setPricingLoading(true);
+    setPricingElapsedTime(0);
     
     try {
-      // Show estimated price immediately (base price * nights)
+      console.log('📊 [BookingConfirm] Showing estimated price first...');
+      // Show estimated price immediately
       const nights = differenceInDays(validCheckOut, validCheckIn);
       const estimatedTotal = Number(property.price) * nights;
       const estimatedServiceFee = estimatedTotal * 0.15;
@@ -141,7 +247,8 @@ export default function BookingConfirm() {
         savings: 0,
       });
 
-      // Get detailed pricing from calculator with safety timeout
+      // Try to get detailed pricing with 20-second timeout
+      console.log('🔄 [BookingConfirm] Fetching detailed pricing...');
       try {
         const pricingPromise = calculateBookingPrice(
           property.id,
@@ -152,23 +259,23 @@ export default function BookingConfirm() {
         );
         
         const safetyTimeout = new Promise((_, reject) =>
-          setTimeout(() => reject(new Error('Pricing calculation timeout - using estimated pricing')), 15000)
+          setTimeout(() => reject(new Error('20s timeout')), 20000)
         );
         
         const breakdown = await Promise.race([pricingPromise, safetyTimeout]);
+        console.log('✅ [BookingConfirm] Detailed pricing received!');
         setPricingBreakdown(breakdown);
-        setPricingLoading(false); // Explicitly clear loading on success
+        setPricingLoading(false);
         
       } catch (pricingError) {
-        console.error('Error calculating detailed pricing:', pricingError);
-        setPricingLoading(false); // CRITICAL: Clear loading state on error
+        console.error('⚠️ [BookingConfirm] Detailed pricing failed:', pricingError);
+        setPricingLoading(false);
         
-        // Keep the estimated pricing, show toast only once
         if (!hasShownEstimateToast) {
           toast({
             variant: 'default',
             title: 'Using Estimated Pricing',
-            description: 'Exact fees unavailable. Using estimated price instead.',
+            description: 'Exact fees unavailable. Using estimated price.',
             action: (
               <Button 
                 variant="outline" 
@@ -186,15 +293,53 @@ export default function BookingConfirm() {
         }
       }
     } catch (error) {
-      console.error('Error calculating pricing:', error);
+      console.error('❌ [BookingConfirm] Pricing error:', error);
+      setPricingLoading(false);
       toast({
         variant: 'destructive',
         title: 'Pricing Error',
         description: 'Unable to calculate pricing. Please try again.',
       });
-    } finally {
-      setPricingLoading(false);
     }
+  };
+
+  const handleBypassPricing = () => {
+    console.log('🔀 [BookingConfirm] User bypassed pricing calculation');
+    setPricingLoading(false);
+    setUseEstimatedPricing(true);
+    
+    if (!pricingBreakdown && property && validCheckIn && validCheckOut) {
+      const nights = differenceInDays(validCheckOut, validCheckIn);
+      const estimatedTotal = Number(property.price) * nights;
+      const estimatedServiceFee = estimatedTotal * 0.15;
+      
+      setPricingBreakdown({
+        nights,
+        basePrice: Number(property.price),
+        subtotal: estimatedTotal,
+        total: estimatedTotal + estimatedServiceFee,
+        cleaningFee: 0,
+        serviceFee: estimatedServiceFee,
+        nightlyRates: [],
+        lengthOfStayDiscount: null,
+        earlyBirdDiscount: null,
+        lastMinuteDiscount: null,
+        promotionalDiscount: null,
+        extraGuestFee: 0,
+        petFee: 0,
+        securityDeposit: 0,
+        serviceFeePercent: 15,
+        taxAmount: 0,
+        taxRate: 0,
+        totalBeforeTax: estimatedTotal + estimatedServiceFee,
+        savings: 0,
+      });
+    }
+    
+    toast({
+      title: 'Estimated Pricing Active',
+      description: 'Using simplified pricing calculation.',
+    });
   };
 
   const propertyCurrency = property?.price_currency || 'EUR';
@@ -364,7 +509,14 @@ export default function BookingConfirm() {
                       Pay with Stripe
                     </CardTitle>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="space-y-4">
+                    {pricingLoading && pricingElapsedTime > 0 && (
+                      <LoadingTimeout 
+                        onBypass={handleBypassPricing}
+                        elapsedSeconds={pricingElapsedTime}
+                      />
+                    )}
+                    
                     <Button
                       onClick={handlePayBooking}
                       size="lg"
