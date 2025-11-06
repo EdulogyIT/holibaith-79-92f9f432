@@ -55,35 +55,48 @@ export const calculateBookingPrice = async (
       .from('property_seasonal_pricing')
       .select('*')
       .eq('property_id', propertyId)
-      .order('start_date');
+      .order('start_date')
+      .then(result => result); // Convert to actual Promise
 
     // 4. Fetch pricing fees (with timeout protection)
     const feesPromise = supabase
       .from('pricing_fees')
       .select('*')
       .eq('property_id', propertyId)
-      .maybeSingle();
+      .maybeSingle()
+      .then(result => result); // Convert to actual Promise
 
     // 5. Fetch active pricing rules (with timeout protection)
     const rulesPromise = supabase
       .from('pricing_rules')
       .select('*')
       .eq('property_id', propertyId)
-      .eq('is_active', true);
+      .eq('is_active', true)
+      .then(result => result); // Convert to actual Promise
 
     // Fetch all in parallel with 10 second timeout
     const timeout = new Promise((_, reject) => 
       setTimeout(() => reject(new Error('Pricing fetch timeout (10s)')), 10000)
     );
 
-    const [seasonalResult, feesResult, rulesResult] = await Promise.race([
-      Promise.all([seasonalPromise, feesPromise, rulesPromise]),
-      timeout
-    ]) as any;
+    let seasonalPrices, fees, rules;
+    
+    try {
+      const [seasonalResult, feesResult, rulesResult] = await Promise.race([
+        Promise.all([seasonalPromise, feesPromise, rulesPromise]),
+        timeout
+      ]) as any;
 
-    const { data: seasonalPrices } = seasonalResult || {};
-    const { data: fees } = feesResult || {};
-    const { data: rules } = rulesResult || {};
+      seasonalPrices = seasonalResult?.data;
+      fees = feesResult?.data;
+      rules = rulesResult?.data;
+    } catch (timeoutError) {
+      console.error('Database queries timed out:', timeoutError);
+      // Use default values when timeout occurs
+      seasonalPrices = [];
+      fees = null;
+      rules = [];
+    }
 
     // 6. Calculate nightly rates with seasonal and weekend adjustments
     const nightlyRates: { date: string; rate: number; isWeekend: boolean }[] = [];

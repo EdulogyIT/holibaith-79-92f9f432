@@ -141,24 +141,34 @@ export default function BookingConfirm() {
         savings: 0,
       });
 
-      // Get detailed pricing from calculator
+      // Get detailed pricing from calculator with safety timeout
       try {
-        const breakdown = await calculateBookingPrice(
+        const pricingPromise = calculateBookingPrice(
           property.id,
           validCheckIn,
           validCheckOut,
           guestsCount,
           petsCount
         );
+        
+        const safetyTimeout = new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('Pricing calculation timeout - using estimated pricing')), 15000)
+        );
+        
+        const breakdown = await Promise.race([pricingPromise, safetyTimeout]);
         setPricingBreakdown(breakdown);
+        setPricingLoading(false); // Explicitly clear loading on success
+        
       } catch (pricingError) {
         console.error('Error calculating detailed pricing:', pricingError);
+        setPricingLoading(false); // CRITICAL: Clear loading state on error
+        
         // Keep the estimated pricing, show toast only once
         if (!hasShownEstimateToast) {
           toast({
             variant: 'default',
             title: 'Using Estimated Pricing',
-            description: 'Exact fees unavailable. Click "Retry" to try again.',
+            description: 'Exact fees unavailable. Using estimated price instead.',
             action: (
               <Button 
                 variant="outline" 
