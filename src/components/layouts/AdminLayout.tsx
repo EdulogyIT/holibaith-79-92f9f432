@@ -31,7 +31,8 @@ import {
   Scale,
   Gavel,
   Star,
-  DollarSign
+  DollarSign,
+  CreditCard
 } from 'lucide-react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -51,6 +52,7 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
     { title: t('admin.properties'), url: '/admin/properties', icon: Building2 },
     { title: 'Pricing', url: '/admin/pricing', icon: Calendar },
     { title: 'Service Fees', url: '/admin/service-fees', icon: DollarSign },
+    { title: 'Stripe Connect', url: '/admin/stripe-connect', icon: CreditCard },
     { title: t('admin.hostsGuests'), url: '/admin/users', icon: Users },
     { title: t('admin.kycVerification'), url: '/admin/kyc', icon: ShieldCheck },
     { title: t('admin.superhosts'), url: '/admin/superhosts', icon: Users },

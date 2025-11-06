@@ -193,9 +193,23 @@ export default function HostPayouts() {
       }
     } catch (error) {
       console.error('Error connecting Stripe:', error);
+      
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      let title = "Error";
+      let description = "Failed to start Stripe onboarding. Please try again.";
+      
+      // Check for specific Stripe platform configuration errors
+      if (errorMessage.includes('managing losses') || errorMessage.includes('platform-profile')) {
+        title = "Platform Configuration Required";
+        description = "The platform administrator needs to complete Stripe Connect setup. Please contact support.";
+      } else if (errorMessage.includes('country')) {
+        title = "Country Not Supported";
+        description = "Stripe Connect is not available in your country yet. Please contact support.";
+      }
+      
       toast({
-        title: "Error",
-        description: "Failed to start Stripe onboarding. Please try again.",
+        title,
+        description,
         variant: "destructive"
       });
     } finally {

@@ -154,8 +154,18 @@ serve(async (req) => {
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     logStep("ERROR", { message: errorMessage });
+    
+    // Provide more context for platform configuration errors
+    let userFriendlyMessage = errorMessage;
+    if (errorMessage.includes('managing losses') || errorMessage.includes('platform-profile')) {
+      userFriendlyMessage = "Platform configuration incomplete. Administrator must complete Stripe Connect platform profile setup at https://dashboard.stripe.com/settings/connect/platform-profile";
+    }
+    
     return new Response(
-      JSON.stringify({ error: errorMessage }),
+      JSON.stringify({ 
+        error: userFriendlyMessage,
+        technical_error: errorMessage 
+      }),
       { 
         headers: { ...corsHeaders, "Content-Type": "application/json" }, 
         status: 500 
