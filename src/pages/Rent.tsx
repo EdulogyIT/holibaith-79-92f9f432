@@ -316,7 +316,7 @@ const Rent = () => {
         {/* Map + list: 60/40 layout */}
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
           {/* Desktop Layout - Side by Side */}
-          <div className="hidden lg:grid lg:grid-cols-[60%_40%] gap-6 items-start">
+          <div className="hidden md:grid md:grid-cols-[60%_40%] gap-6 items-start">
             {/* Cards */}
             <div className="order-2 lg:order-1">
               <div className="flex items-center justify-between mb-6 gap-4 flex-wrap">
@@ -400,7 +400,7 @@ const Rent = () => {
           </div>
 
           {/* Mobile Layout - Draggable Bottom Sheet */}
-          <div className="lg:hidden relative h-[calc(100vh-180px)]">
+          <div className="md:hidden relative h-[calc(100vh-180px)]">
             {/* Fixed Map Background */}
             <div className="absolute inset-0 z-0">
               <LocalErrorBoundary
