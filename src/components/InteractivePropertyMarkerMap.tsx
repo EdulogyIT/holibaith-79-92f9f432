@@ -171,7 +171,13 @@ export const InteractivePropertyMarkerMap = ({
           </div>
 
           {/* Property markers */}
-          <div className="absolute inset-0">
+          <div 
+            className="absolute inset-0 pointer-events-none transition-transform duration-300"
+            style={{
+              transform: `scale(${zoomLevel}) translate(${panPosition.x}px, ${panPosition.y}px)`,
+              transformOrigin: 'center center',
+            }}
+          >
             {properties.map((property, index) => {
               const position = getPropertyPosition(property.city);
               const colorClass = getPriceColor(property.price, property.price_type);

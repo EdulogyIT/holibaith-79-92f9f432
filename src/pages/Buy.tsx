@@ -22,6 +22,8 @@ import LoginModal from "@/components/LoginModal";
 import useEmblaCarousel from 'embla-carousel-react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import React from "react";
+import { Drawer, DrawerContent } from "@/components/ui/drawer";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 /** ---------- Types ---------- */
 interface Property {
@@ -92,6 +94,8 @@ const Buy = () => {
   const [filteredProperties, setFilteredProperties] = useState<Property[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+  const [snapPoint, setSnapPoint] = useState<number | string | null>(0.6);
+  const isMobile = useIsMobile();
 
   useScrollToTop();
 
@@ -312,7 +316,8 @@ const Buy = () => {
 
         {/* Map + list: 60/40 layout */}
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
-          <div className="grid grid-cols-1 lg:grid-cols-[60%_40%] gap-6 items-start">
+          {/* Desktop Layout - Side by Side */}
+          <div className="hidden lg:grid lg:grid-cols-[60%_40%] gap-6 items-start">
             {/* Cards column */}
             <div className="order-2 lg:order-1">
               {/* Header — count only */}
@@ -419,6 +424,118 @@ const Buy = () => {
                 </div>
               </LocalErrorBoundary>
             </div>
+          </div>
+
+          {/* Mobile Layout - Draggable Bottom Sheet */}
+          <div className="lg:hidden relative h-[calc(100vh-180px)]">
+            {/* Fixed Map Background */}
+            <div className="absolute inset-0 z-0">
+              <LocalErrorBoundary
+                fallback={
+                  <div className="w-full h-full bg-muted/20 rounded-2xl flex items-center justify-center">
+                    <div className="text-center p-4">
+                      <MapPin className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
+                      <p className="text-sm text-muted-foreground">Map Unavailable</p>
+                    </div>
+                  </div>
+                }
+              >
+                <MapboxPropertyMap properties={filteredProperties || []} />
+              </LocalErrorBoundary>
+            </div>
+
+            {/* Draggable Property Sheet */}
+            <Drawer
+              open={true}
+              modal={false}
+              snapPoints={[0.9, 0.6, 0.3]}
+              activeSnapPoint={snapPoint}
+              setActiveSnapPoint={setSnapPoint}
+            >
+              <DrawerContent className="h-[90vh] bg-background border-t">
+                {/* Drag Handle */}
+                <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-muted-foreground/20 mt-4 mb-4" />
+                
+                {/* Property Count & Filters */}
+                <div className="flex items-center justify-between mb-4 px-4 gap-4 flex-wrap">
+                  <h2 className="text-xl font-bold">
+                    {filteredProperties.length} {t("properties") || "properties"}
+                  </h2>
+                  <PropertyFilters
+                    isModalOpen={isFilterModalOpen}
+                    onModalClose={() => setIsFilterModalOpen(false)}
+                    onFilterChange={(filters) => {
+                      let filtered = properties;
+
+                      if (filters.location) {
+                        const loc = (filters.location || "").toLowerCase();
+                        filtered = filtered.filter(
+                          (p) =>
+                            (p.city || "").toLowerCase().includes(loc) ||
+                            (p.location || "").toLowerCase().includes(loc)
+                        );
+                      }
+
+                      if (filters.propertyType !== "all") {
+                        filtered = filtered.filter(
+                          (p) => p.property_type === filters.propertyType
+                        );
+                      }
+
+                      if (filters.bedrooms > 0) {
+                        filtered = filtered.filter((p) => num(p.bedrooms) >= filters.bedrooms);
+                      }
+
+                      if (filters.bathrooms > 0) {
+                        filtered = filtered.filter((p) => num(p.bathrooms) >= filters.bathrooms);
+                      }
+
+                      if (filters.minPrice > 0 || filters.maxPrice < 5_000_000_000) {
+                        filtered = filtered.filter((p) => {
+                          const price = num(p.price);
+                          return price >= filters.minPrice && price <= filters.maxPrice;
+                        });
+                      }
+
+                      if (filters.minArea || filters.maxArea) {
+                        const minArea = filters.minArea ? num(filters.minArea) : 0;
+                        const maxArea = filters.maxArea ? num(filters.maxArea) : Infinity;
+                        filtered = filtered.filter((p) => {
+                          const area = num(p.area);
+                          return area >= minArea && area <= maxArea;
+                        });
+                      }
+
+                      setFilteredProperties(filtered);
+                    }}
+                    listingType="buy"
+                  />
+                </div>
+
+                {/* Scrollable Property Cards */}
+                <div className="flex-1 overflow-y-auto px-4 pb-6">
+                  {isLoading ? (
+                    <div className="flex items-center justify-center py-12">
+                      <Loader2 className="h-8 w-8 animate-spin" />
+                      <span className="ml-2">{t("loading")}</span>
+                    </div>
+                  ) : filteredProperties.length === 0 ? (
+                    <div className="text-center py-12">
+                      <div className="text-lg font-semibold text-foreground mb-2">
+                        {t("noPropertiesFound")}
+                      </div>
+                      <div className="text-muted-foreground">{t("Adjust Filters Or Check Later")}</div>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {filteredProperties.map((property) => (
+                        <PropertyCard key={property.id} property={property} />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </DrawerContent>
+            </Drawer>
           </div>
         </section>
 
