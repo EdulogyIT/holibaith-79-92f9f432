@@ -48,7 +48,6 @@ import { RentVerificationStatus } from "@/components/RentVerificationStatus";
 import { DigitalLeaseOption } from "@/components/DigitalLeaseOption";
 import { LegalSupportButton } from "@/components/LegalSupportButton";
 import GooglePropertyMap from "@/components/GooglePropertyMap";
-import { MobileRateCard } from "@/components/MobileRateCard";
 
 interface Property {
   id: string;
@@ -276,7 +275,7 @@ const PropertyEnhanced = () => {
       <Navigation />
       
       {/* Safe paddings; never exceed viewport width */}
-      <main className="mx-auto w-full max-w-7xl px-3 sm:px-4 lg:px-8 pt-18 sm:pt-20 pb-28 md:pb-8">
+      <main className="mx-auto w-full max-w-7xl px-3 sm:px-4 lg:px-8 pt-18 sm:pt-20 pb-8">
         {/* Grid stacks on mobile; only splits on lg+ */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
           
@@ -813,30 +812,6 @@ const PropertyEnhanced = () => {
       </main>
 
       <Footer />
-
-      {/* Mobile Rate Card - Fixed Bottom CTA */}
-      <div className="md:hidden">
-        <MobileRateCard
-          price={property.price}
-          priceType={isShortStay ? "daily" : (property.price_type === "per_month" ? "monthly" : "daily")}
-          priceCurrency={property.price_currency}
-          onViewProperty={() => {
-            if (isShortStay) {
-              // Scroll to booking section
-              const bookingSection = document.querySelector('[data-booking-section]');
-              if (bookingSection) {
-                bookingSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-              } else {
-                // Fallback: scroll to sidebar
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }
-            } else {
-              // Open schedule visit modal for buy/rent
-              setIsScheduleModalOpen(true);
-            }
-          }}
-        />
-      </div>
 
       {/* Modals */}
       {(isBuy || isRent) && (

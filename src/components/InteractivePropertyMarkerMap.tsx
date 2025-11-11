@@ -171,13 +171,7 @@ export const InteractivePropertyMarkerMap = ({
           </div>
 
           {/* Property markers */}
-          <div 
-            className="absolute inset-0 pointer-events-none transition-transform duration-300"
-            style={{
-              transform: `scale(${zoomLevel}) translate(${panPosition.x}px, ${panPosition.y}px)`,
-              transformOrigin: 'center center',
-            }}
-          >
+          <div className="absolute inset-0 pointer-events-none">
             {properties.map((property, index) => {
               const position = getPropertyPosition(property.city);
               const colorClass = getPriceColor(property.price, property.price_type);
@@ -185,6 +179,10 @@ export const InteractivePropertyMarkerMap = ({
               // Add slight random offset to prevent overlapping markers in same city
               const offsetX = (index % 3 - 1) * 2;
               const offsetY = (Math.floor(index / 3) % 3 - 1) * 2;
+              
+              // Calculate position with zoom and pan
+              const scaledX = (position.x * zoomLevel) + (panPosition.x / 10);
+              const scaledY = (position.y * zoomLevel) + (panPosition.y / 10);
               
               return (
                 <button
@@ -197,12 +195,11 @@ export const InteractivePropertyMarkerMap = ({
                   onMouseLeave={() => setHoveredProperty(null)}
                   style={{
                     position: 'absolute',
-                    left: `calc(${position.x}% + ${offsetX}px)`,
-                    top: `calc(${position.y}% + ${offsetY}px)`,
+                    left: `calc(${scaledX}% + ${offsetX}px)`,
+                    top: `calc(${scaledY}% + ${offsetY}px)`,
                     transform: 'translate(-50%, -50%)',
-                    transformOrigin: 'center',
                   }}
-                  className={`${colorClass} text-white px-3 py-1.5 rounded-full shadow-lg hover:shadow-2xl hover:brightness-110 hover:z-50 transition-all duration-200 font-semibold text-xs whitespace-nowrap z-10 border-2 border-white dark:border-gray-800 pointer-events-auto will-change-transform`}
+                  className={`${colorClass} text-white px-3 py-1.5 rounded-full shadow-lg hover:shadow-2xl hover:brightness-110 transition-all duration-200 font-semibold text-xs whitespace-nowrap z-10 border-2 border-white dark:border-gray-800 pointer-events-auto`}
                 >
                   {formatPrice(
                     typeof property.price === 'number' ? property.price : parseFloat(property.price),

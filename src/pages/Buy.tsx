@@ -22,8 +22,6 @@ import LoginModal from "@/components/LoginModal";
 import useEmblaCarousel from 'embla-carousel-react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import React from "react";
-import { Drawer, DrawerContent } from "@/components/ui/drawer";
-import { useIsMobile } from "@/hooks/use-mobile";
 
 /** ---------- Types ---------- */
 interface Property {
@@ -94,8 +92,6 @@ const Buy = () => {
   const [filteredProperties, setFilteredProperties] = useState<Property[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
-  const [snapPoint, setSnapPoint] = useState<number | string | null>(0.6);
-  const isMobile = useIsMobile();
 
   useScrollToTop();
 
@@ -426,13 +422,80 @@ const Buy = () => {
             </div>
           </div>
 
-          {/* Mobile Layout - Draggable Bottom Sheet */}
-          <div className="md:hidden relative h-[calc(100vh-180px)]">
-            {/* Fixed Map Background */}
-            <div className="absolute inset-0 z-0">
+          {/* Mobile Layout - Stacked */}
+          <div className="lg:hidden space-y-6">
+            {/* Property Cards */}
+            <div>
+              <div className="flex items-center justify-between mb-6 gap-4 flex-wrap">
+                <h2 className="text-xl font-bold">
+                  {filteredProperties.length} {t("properties") || "properties"}
+                </h2>
+                <PropertyFilters
+                  isModalOpen={isFilterModalOpen}
+                  onModalClose={() => setIsFilterModalOpen(false)}
+                  onFilterChange={(filters) => {
+                    let filtered = properties;
+
+                    if (filters.location) {
+                      const loc = (filters.location || "").toLowerCase();
+                      filtered = filtered.filter(
+                        (p) =>
+                          (p.city || "").toLowerCase().includes(loc) ||
+                          (p.location || "").toLowerCase().includes(loc)
+                      );
+                    }
+
+                    if (filters.propertyType !== "all") {
+                      filtered = filtered.filter(
+                        (p) => p.property_type === filters.propertyType
+                      );
+                    }
+
+                    if (filters.bedrooms > 0) {
+                      filtered = filtered.filter((p) => num(p.bedrooms) >= filters.bedrooms);
+                    }
+
+                    if (filters.bathrooms > 0) {
+                      filtered = filtered.filter((p) => num(p.bathrooms) >= filters.bathrooms);
+                    }
+
+                    if (filters.minPrice > 0 || filters.maxPrice < 5_000_000_000) {
+                      filtered = filtered.filter((p) => {
+                        const price = num(p.price);
+                        return price >= filters.minPrice && price <= filters.maxPrice;
+                      });
+                    }
+
+                    setFilteredProperties(filtered);
+                  }}
+                  listingType="buy"
+                />
+              </div>
+
+              {isLoading ? (
+                <div className="flex items-center justify-center py-12">
+                  <Loader2 className="h-8 w-8 animate-spin" />
+                  <span className="ml-2">{t("loading")}</span>
+                </div>
+              ) : filteredProperties.length === 0 ? (
+                <div className="text-center py-12">
+                  <div className="text-lg font-semibold mb-2">{t("noPropertiesFound")}</div>
+                  <div className="text-muted-foreground">{t("Adjust Filters Or Check Later")}</div>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {filteredProperties.map((p) => (
+                    <PropertyCard key={p.id} property={p} />
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Map Below */}
+            <div className="h-[400px] rounded-2xl overflow-hidden ring-1 ring-border">
               <LocalErrorBoundary
                 fallback={
-                  <div className="w-full h-full bg-muted/20 rounded-2xl flex items-center justify-center">
+                  <div className="w-full h-full bg-muted/20 flex items-center justify-center">
                     <div className="text-center p-4">
                       <MapPin className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
                       <p className="text-sm text-muted-foreground">Map Unavailable</p>
@@ -443,108 +506,6 @@ const Buy = () => {
                 <MapboxPropertyMap properties={filteredProperties || []} />
               </LocalErrorBoundary>
             </div>
-
-            {/* Draggable Property Sheet */}
-            <Drawer
-              open={true}
-              modal={false}
-              snapPoints={[0.85, 0.55, 0.25]}
-              activeSnapPoint={snapPoint}
-              setActiveSnapPoint={setSnapPoint}
-              fadeFromIndex={1}
-            >
-              <DrawerContent 
-                className="h-[90vh] bg-background border-t"
-                style={{ 
-                  paddingTop: 'env(safe-area-inset-top)',
-                }}
-              >
-                {/* Drag Handle */}
-                <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-muted-foreground/20 mt-3 mb-3" />
-                
-                {/* Property Count & Filters */}
-                <div className="flex items-center justify-between mb-3 px-3 sm:px-4 gap-3 flex-wrap">
-                  <h2 className="text-lg sm:text-xl font-bold">
-                    {filteredProperties.length} {t("properties") || "properties"}
-                  </h2>
-                  <PropertyFilters
-                    isModalOpen={isFilterModalOpen}
-                    onModalClose={() => setIsFilterModalOpen(false)}
-                    onFilterChange={(filters) => {
-                      let filtered = properties;
-
-                      if (filters.location) {
-                        const loc = (filters.location || "").toLowerCase();
-                        filtered = filtered.filter(
-                          (p) =>
-                            (p.city || "").toLowerCase().includes(loc) ||
-                            (p.location || "").toLowerCase().includes(loc)
-                        );
-                      }
-
-                      if (filters.propertyType !== "all") {
-                        filtered = filtered.filter(
-                          (p) => p.property_type === filters.propertyType
-                        );
-                      }
-
-                      if (filters.bedrooms > 0) {
-                        filtered = filtered.filter((p) => num(p.bedrooms) >= filters.bedrooms);
-                      }
-
-                      if (filters.bathrooms > 0) {
-                        filtered = filtered.filter((p) => num(p.bathrooms) >= filters.bathrooms);
-                      }
-
-                      if (filters.minPrice > 0 || filters.maxPrice < 5_000_000_000) {
-                        filtered = filtered.filter((p) => {
-                          const price = num(p.price);
-                          return price >= filters.minPrice && price <= filters.maxPrice;
-                        });
-                      }
-
-                      if (filters.minArea || filters.maxArea) {
-                        const minArea = filters.minArea ? num(filters.minArea) : 0;
-                        const maxArea = filters.maxArea ? num(filters.maxArea) : Infinity;
-                        filtered = filtered.filter((p) => {
-                          const area = num(p.area);
-                          return area >= minArea && area <= maxArea;
-                        });
-                      }
-
-                      setFilteredProperties(filtered);
-                    }}
-                    listingType="buy"
-                  />
-                </div>
-
-                {/* Scrollable Property Cards */}
-                <div 
-                  className="flex-1 overflow-y-auto px-3 sm:px-4"
-                  style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 1rem)' }}
-                >
-                  {isLoading ? (
-                    <div className="flex items-center justify-center py-12">
-                      <Loader2 className="h-8 w-8 animate-spin" />
-                      <span className="ml-2">{t("loading")}</span>
-                    </div>
-                  ) : filteredProperties.length === 0 ? (
-                    <div className="text-center py-12">
-                      <div className="text-lg font-semibold text-foreground mb-2">
-                        {t("noPropertiesFound")}
-                      </div>
-                      <div className="text-muted-foreground">{t("Adjust Filters Or Check Later")}</div>
-                    </div>
-                  ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                      {filteredProperties.map((property) => (
-                        <PropertyCard key={property.id} property={property} />
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </DrawerContent>
-            </Drawer>
           </div>
         </section>
 

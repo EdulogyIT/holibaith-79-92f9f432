@@ -26,8 +26,6 @@ import LoginModal from "@/components/LoginModal";
 import useEmblaCarousel from 'embla-carousel-react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import React from "react";
-import { Drawer, DrawerContent } from "@/components/ui/drawer";
-import { useIsMobile } from "@/hooks/use-mobile";
 
 interface Property {
   id: string;
@@ -88,8 +86,6 @@ const ShortStay = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [hasActiveFilters, setHasActiveFilters] = useState(false);
   const [hoveredPropertyId, setHoveredPropertyId] = useState<string | null>(null);
-  const [snapPoint, setSnapPoint] = useState<number | string | null>(0.6);
-  const isMobile = useIsMobile();
 
   useScrollToTop();
 
@@ -386,13 +382,60 @@ const ShortStay = () => {
             </div>
           </div>
 
-          {/* Mobile Layout - Draggable Bottom Sheet */}
-          <div className="md:hidden relative h-[calc(100vh-180px)]">
-            {/* Fixed Map Background */}
-            <div className="absolute inset-0 z-0">
+          {/* Mobile Layout - Stacked */}
+          <div className="lg:hidden space-y-6">
+            {/* Property Cards */}
+            <div>
+              <div className="flex items-center justify-between mb-6 gap-4 flex-wrap">
+                <div className="flex items-center gap-2">
+                  <h2 className="text-xl font-bold">
+                    {filteredProperties.length} {t("properties") || "properties"}
+                  </h2>
+                  {hasActiveFilters && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={clearAllFilters}
+                      className="flex items-center gap-1.5 h-8 text-xs"
+                    >
+                      <X className="h-3 w-3" />
+                      {t("clearFilters") || "Clear"}
+                    </Button>
+                  )}
+                </div>
+                <PropertyFilters 
+                  onFilterChange={handleFilterChange} 
+                  listingType="shortStay"
+                  propertyCount={filteredProperties.length}
+                  isModalOpen={isFilterModalOpen}
+                  onModalClose={() => setIsFilterModalOpen(false)}
+                />
+              </div>
+
+              {isLoading ? (
+                <div className="flex items-center justify-center py-12">
+                  <Loader2 className="h-8 w-8 animate-spin" />
+                  <span className="ml-2">{t("loading")}</span>
+                </div>
+              ) : filteredProperties.length === 0 ? (
+                <div className="text-center py-12">
+                  <div className="text-lg font-semibold mb-2">{t("noPropertiesFound")}</div>
+                  <div className="text-muted-foreground">{t("Adjust Filters Or Check Later")}</div>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {filteredProperties.map((p) => (
+                    <PropertyCard key={p.id} property={p} />
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Map Below */}
+            <div className="h-[400px] rounded-2xl overflow-hidden ring-1 ring-border">
               <LocalErrorBoundary
                 fallback={
-                  <div className="w-full h-full bg-muted/20 rounded-2xl flex items-center justify-center">
+                  <div className="w-full h-full bg-muted/20 flex items-center justify-center">
                     <div className="text-center p-4">
                       <MapPin className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
                       <p className="text-sm text-muted-foreground">Map Unavailable</p>
@@ -403,77 +446,6 @@ const ShortStay = () => {
                 <MapboxPropertyMap properties={filteredProperties || []} hoveredPropertyId={hoveredPropertyId} />
               </LocalErrorBoundary>
             </div>
-
-            {/* Draggable Property Sheet */}
-            <Drawer
-              open={true}
-              modal={false}
-              snapPoints={[0.85, 0.55, 0.25]}
-              activeSnapPoint={snapPoint}
-              setActiveSnapPoint={setSnapPoint}
-              fadeFromIndex={1}
-            >
-              <DrawerContent 
-                className="h-[90vh] bg-background border-t"
-                style={{ 
-                  paddingTop: 'env(safe-area-inset-top)',
-                }}
-              >
-                {/* Drag Handle */}
-                <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-muted-foreground/20 mt-3 mb-3" />
-                
-                {/* Property Count & Filters */}
-                <div className="flex items-center justify-between mb-3 px-3 sm:px-4 gap-3 flex-wrap">
-                  <div className="flex items-center gap-2">
-                    <h2 className="text-lg sm:text-xl font-bold">
-                      {filteredProperties.length} {t("properties") || "properties"}
-                    </h2>
-                    {hasActiveFilters && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={clearAllFilters}
-                        className="flex items-center gap-1.5 h-8 text-xs"
-                      >
-                        <X className="h-3 w-3" />
-                        {t("clearFilters") || "Clear"}
-                      </Button>
-                    )}
-                  </div>
-                  <PropertyFilters 
-                    onFilterChange={handleFilterChange} 
-                    listingType="shortStay"
-                    propertyCount={filteredProperties.length}
-                    isModalOpen={isFilterModalOpen}
-                    onModalClose={() => setIsFilterModalOpen(false)}
-                  />
-                </div>
-
-                {/* Scrollable Property Cards */}
-                <div 
-                  className="flex-1 overflow-y-auto px-3 sm:px-4"
-                  style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 1rem)' }}
-                >
-                  {isLoading ? (
-                    <div className="flex items-center justify-center py-12">
-                      <Loader2 className="h-8 w-8 animate-spin" />
-                      <span className="ml-2">{t("loading")}</span>
-                    </div>
-                  ) : filteredProperties.length === 0 ? (
-                    <div className="text-center py-12">
-                      <div className="text-lg font-semibold mb-2">{t("noPropertiesFound")}</div>
-                      <div className="text-muted-foreground">{t("Adjust Filters Or Check Later")}</div>
-                    </div>
-                  ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                      {filteredProperties.map((p) => (
-                        <PropertyCard key={p.id} property={p} />
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </DrawerContent>
-            </Drawer>
           </div>
         </section>
 
