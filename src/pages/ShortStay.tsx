@@ -408,18 +408,24 @@ const ShortStay = () => {
             <Drawer
               open={true}
               modal={false}
-              snapPoints={[0.9, 0.6, 0.3]}
+              snapPoints={[0.85, 0.55, 0.25]}
               activeSnapPoint={snapPoint}
               setActiveSnapPoint={setSnapPoint}
+              fadeFromIndex={1}
             >
-              <DrawerContent className="h-[90vh] bg-background border-t">
+              <DrawerContent 
+                className="h-[90vh] bg-background border-t"
+                style={{ 
+                  paddingTop: 'env(safe-area-inset-top)',
+                }}
+              >
                 {/* Drag Handle */}
-                <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-muted-foreground/20 mt-4 mb-4" />
+                <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-muted-foreground/20 mt-3 mb-3" />
                 
                 {/* Property Count & Filters */}
-                <div className="flex items-center justify-between mb-4 px-4 gap-4 flex-wrap">
-                  <div className="flex items-center gap-3">
-                    <h2 className="text-xl font-bold">
+                <div className="flex items-center justify-between mb-3 px-3 sm:px-4 gap-3 flex-wrap">
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-lg sm:text-xl font-bold">
                       {filteredProperties.length} {t("properties") || "properties"}
                     </h2>
                     {hasActiveFilters && (
@@ -427,9 +433,9 @@ const ShortStay = () => {
                         variant="outline"
                         size="sm"
                         onClick={clearAllFilters}
-                        className="flex items-center gap-2"
+                        className="flex items-center gap-1.5 h-8 text-xs"
                       >
-                        <X className="h-4 w-4" />
+                        <X className="h-3 w-3" />
                         {t("clearFilters") || "Clear"}
                       </Button>
                     )}
@@ -444,7 +450,10 @@ const ShortStay = () => {
                 </div>
 
                 {/* Scrollable Property Cards */}
-                <div className="flex-1 overflow-y-auto px-4 pb-6">
+                <div 
+                  className="flex-1 overflow-y-auto px-3 sm:px-4"
+                  style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 1rem)' }}
+                >
                   {isLoading ? (
                     <div className="flex items-center justify-center py-12">
                       <Loader2 className="h-8 w-8 animate-spin" />
@@ -456,7 +465,7 @@ const ShortStay = () => {
                       <div className="text-muted-foreground">{t("Adjust Filters Or Check Later")}</div>
                     </div>
                   ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                       {filteredProperties.map((p) => (
                         <PropertyCard key={p.id} property={p} />
                       ))}
