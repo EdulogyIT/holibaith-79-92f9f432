@@ -183,7 +183,10 @@ export const InteractivePropertyMarkerMap = ({
               return (
                 <button
                   key={property.id}
-                  onClick={() => handleMarkerClick(property.id)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleMarkerClick(property.id);
+                  }}
                   onMouseEnter={(e) => handleMarkerHover(property, e)}
                   onMouseLeave={() => setHoveredProperty(null)}
                   style={{
@@ -191,8 +194,9 @@ export const InteractivePropertyMarkerMap = ({
                     left: `calc(${position.x}% + ${offsetX}px)`,
                     top: `calc(${position.y}% + ${offsetY}px)`,
                     transform: 'translate(-50%, -50%)',
+                    transformOrigin: 'center',
                   }}
-                  className={`${colorClass} text-white px-3 py-1.5 rounded-full shadow-lg hover:scale-110 transition-all duration-200 font-semibold text-xs whitespace-nowrap z-10 border-2 border-white dark:border-gray-800`}
+                  className={`${colorClass} text-white px-3 py-1.5 rounded-full shadow-lg hover:shadow-2xl hover:brightness-110 hover:z-50 transition-all duration-200 font-semibold text-xs whitespace-nowrap z-10 border-2 border-white dark:border-gray-800 pointer-events-auto will-change-transform`}
                 >
                   {formatPrice(
                     typeof property.price === 'number' ? property.price : parseFloat(property.price),
