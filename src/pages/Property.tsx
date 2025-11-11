@@ -275,7 +275,7 @@ const Property = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
-      <main className="pt-20">
+      <main className="pt-[120px] md:pt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 md:py-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
             {/* Main Content */}
@@ -586,7 +586,7 @@ const Property = () => {
 
             {/* Sticky Sidebar - Booking Card - Airbnb Style */}
             <div className="lg:col-span-1">
-              <Card className="shadow-xl sticky top-24">
+              <Card className="shadow-xl sticky top-24 z-10">
                 <CardHeader className="pb-4">
                   {/* Price at top - Airbnb style */}
                   <div className="flex items-baseline gap-2">

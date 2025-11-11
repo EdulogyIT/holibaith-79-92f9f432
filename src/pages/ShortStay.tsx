@@ -22,7 +22,7 @@ import { HostAdsCarousel } from "@/components/HostAdsCarousel";
 import { useAuth } from "@/contexts/AuthContext";
 import { useWishlist, setAuthModalCallback } from "@/hooks/useWishlist";
 import { WishlistButton } from "@/components/WishlistButton";
-import { AuthenticationModal } from "@/components/AuthenticationModal";
+import LoginModal from "@/components/LoginModal";
 import useEmblaCarousel from 'embla-carousel-react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import React from "react";
@@ -78,7 +78,7 @@ const ShortStay = () => {
   const { formatPrice } = useCurrency();
   const { user } = useAuth();
   const { wishlistIds, toggleWishlist } = useWishlist(user?.id);
-  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
 
   const [properties, setProperties] = useState<Property[]>([]);
@@ -91,7 +91,7 @@ const ShortStay = () => {
 
   useEffect(() => { 
     fetchProperties();
-    setAuthModalCallback(() => setAuthModalOpen(true));
+    setAuthModalCallback(() => setIsLoginModalOpen(true));
   }, []);
   
   useEffect(() => { applyFiltersFromURL(); }, [properties, routerLocation.search]);
@@ -288,7 +288,7 @@ const ShortStay = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
-      <main className="pt-20">
+      <main className="pt-[120px] md:pt-20">
         <ShortStayHeroSearch 
           onSearch={(vals) => {
             const qs = new URLSearchParams();
@@ -306,8 +306,8 @@ const ShortStay = () => {
 
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
           <div className="grid grid-cols-1 lg:grid-cols-[60%_40%] gap-6 items-start">
-            {/* Property Cards - LEFT */}
-            <div className="order-1">
+            {/* Property Cards */}
+            <div className="order-2 lg:order-1">
               <div className="flex items-center justify-between mb-6 gap-4 flex-wrap">
                 <div className="flex items-center gap-3">
                   <h2 className="text-2xl font-bold">
@@ -353,8 +353,8 @@ const ShortStay = () => {
               )}
             </div>
 
-            {/* Map - RIGHT */}
-            <div className="order-2 lg:min-h-[200vh]">
+            {/* Map */}
+            <div className="order-1 lg:order-2 lg:min-h-[200vh]">
               <LocalErrorBoundary
                 fallback={
                   <div className="sticky top-24 rounded-2xl ring-1 ring-border bg-background p-8 h-[calc(100vh-7rem)]">
@@ -400,7 +400,7 @@ const ShortStay = () => {
         <AIChatBox />
       </main>
       <Footer />
-      <AuthenticationModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
+      <LoginModal open={isLoginModalOpen} onOpenChange={setIsLoginModalOpen} />
     </div>
   );
 };

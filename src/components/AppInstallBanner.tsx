@@ -22,8 +22,8 @@ export const AppInstallBanner = () => {
   if (!isMobile || !isVisible) return null;
 
   return (
-    <div className="fixed top-[72px] sm:top-16 left-0 right-0 z-30 bg-background border-b border-border shadow-sm animate-in slide-in-from-top duration-300">
-      <div className="flex items-center justify-between gap-2 px-2 py-1.5 sm:px-4 sm:py-2 max-w-7xl mx-auto">
+    <div className="fixed top-0 left-0 right-0 z-[250] bg-background border-b border-border shadow-sm animate-in slide-in-from-top duration-300">
+      <div className="flex items-center justify-between gap-2 px-2 py-2 sm:px-4 sm:py-2.5 max-w-7xl mx-auto">
         <div className="flex items-center gap-1.5 sm:gap-3 flex-1 min-w-0">
           <Smartphone className="h-5 w-5 sm:h-6 sm:w-6 text-primary flex-shrink-0" />
           <div className="flex-1 min-w-0">

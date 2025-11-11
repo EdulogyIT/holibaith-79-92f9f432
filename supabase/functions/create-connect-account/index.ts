@@ -24,8 +24,21 @@ serve(async (req) => {
     const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
     const STRIPE_SECRET_KEY = Deno.env.get("STRIPE_LIVE_SECRET_KEY");
 
+    logStep("Environment check", { 
+      hasSupabaseUrl: !!SUPABASE_URL,
+      hasSupabaseKey: !!SUPABASE_SERVICE_ROLE_KEY,
+      hasStripeKey: !!STRIPE_SECRET_KEY,
+      stripeKeyPrefix: STRIPE_SECRET_KEY?.substring(0, 8) // Show prefix to verify it's live key
+    });
+
     if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY || !STRIPE_SECRET_KEY) {
       throw new Error("Missing required environment variables");
+    }
+
+    // Verify we're using LIVE mode keys
+    if (!STRIPE_SECRET_KEY.startsWith('sk_live_')) {
+      logStep("WARNING: Using test mode Stripe key instead of live key", { keyPrefix: STRIPE_SECRET_KEY.substring(0, 8) });
+      throw new Error("Stripe LIVE key required. Currently using test key. Please update STRIPE_LIVE_SECRET_KEY secret.");
     }
 
     const supabaseClient = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
@@ -53,6 +66,10 @@ serve(async (req) => {
     const stripe = new Stripe(STRIPE_SECRET_KEY, { 
       apiVersion: "2025-08-27.basil" 
     });
+    
+    logStep("Stripe client initialized", { 
+      mode: STRIPE_SECRET_KEY.startsWith('sk_live_') ? 'LIVE' : 'TEST'
+    });
 
     // Check if user already has a Stripe Connect account
     const { data: existingAccount } = await supabaseClient
@@ -72,12 +89,19 @@ serve(async (req) => {
       
       // Validate that this account exists in Stripe (might be test account in live mode)
       try {
-        await stripe.accounts.retrieve(accountId);
-        logStep("Stripe account validated successfully", { accountId });
+        const existingStripeAccount = await stripe.accounts.retrieve(accountId);
+        logStep("Stripe account validated successfully", { 
+          accountId,
+          accountMode: existingStripeAccount.id.startsWith('acct_') ? 'LIVE/TEST (indeterminate from ID)' : 'unknown',
+          chargesEnabled: existingStripeAccount.charges_enabled,
+          payoutsEnabled: existingStripeAccount.payouts_enabled
+        });
       } catch (error) {
         logStep("Stripe account does not exist (likely test account in live mode)", { 
           accountId, 
-          error: error instanceof Error ? error.message : String(error) 
+          error: error instanceof Error ? error.message : String(error),
+          errorType: (error as any)?.type,
+          errorCode: (error as any)?.code
         });
         
         // Delete invalid account record from database
@@ -110,7 +134,13 @@ serve(async (req) => {
       });
 
       accountId = account.id;
-      logStep("Created new Stripe Connect account", { accountId });
+      logStep("Created new Stripe Connect account", { 
+        accountId,
+        country: account.country,
+        type: account.type,
+        chargesEnabled: account.charges_enabled,
+        capabilities: account.capabilities
+      });
 
       // Store in database
       await supabaseClient

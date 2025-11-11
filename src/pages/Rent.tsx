@@ -17,7 +17,7 @@ import CitiesSection from "@/components/CitiesSection";
 import { useAuth } from "@/contexts/AuthContext";
 import { useWishlist, setAuthModalCallback } from "@/hooks/useWishlist";
 import { WishlistButton } from "@/components/WishlistButton";
-import { AuthenticationModal } from "@/components/AuthenticationModal";
+import LoginModal from "@/components/LoginModal";
 import useEmblaCarousel from 'embla-carousel-react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import React from "react";
@@ -85,7 +85,7 @@ const Rent = () => {
   const { formatPrice } = useCurrency();
   const { user } = useAuth();
   const { wishlistIds, toggleWishlist } = useWishlist(user?.id);
-  const [authModalOpen, setAuthModalOpen] = React.useState(false);
+  const [isLoginModalOpen, setIsLoginModalOpen] = React.useState(false);
 
   const [properties, setProperties] = useState<Property[]>([]);
   const [filteredProperties, setFilteredProperties] = useState<Property[]>([]);
@@ -95,7 +95,7 @@ const Rent = () => {
   useScrollToTop();
 
   React.useEffect(() => {
-    setAuthModalCallback(() => setAuthModalOpen(true));
+    setAuthModalCallback(() => setIsLoginModalOpen(true));
   }, []);
 
   useEffect(() => {
@@ -306,14 +306,14 @@ const Rent = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
-      <main className="pt-20">
+      <main className="pt-[120px] md:pt-20">
         <RentHeroSearch onSearch={handleSearch} onFilterClick={() => setIsFilterModalOpen(true)} />
 
         {/* Map + list: 60/40 layout */}
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
           <div className="grid grid-cols-1 lg:grid-cols-[60%_40%] gap-6 items-start">
-            {/* Cards - LEFT */}
-            <div className="order-1">
+            {/* Cards */}
+            <div className="order-2 lg:order-1">
               <div className="flex items-center justify-between mb-6 gap-4 flex-wrap">
                 <h2 className="text-2xl font-bold">
                   {filteredProperties.length} {t("properties") || "properties"}
@@ -366,8 +366,8 @@ const Rent = () => {
               )}
             </div>
 
-            {/* Map - RIGHT */}
-            <div className="order-2 lg:min-h-[200vh]">
+            {/* Map */}
+            <div className="order-1 lg:order-2 lg:min-h-[200vh]">
               <LocalErrorBoundary
                 fallback={
                   <div className="sticky top-24 rounded-2xl ring-1 ring-border bg-background p-8 h-[calc(100vh-7rem)]">
@@ -399,7 +399,7 @@ const Rent = () => {
         <AIChatBox />
       </main>
       <Footer />
-      <AuthenticationModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
+      <LoginModal open={isLoginModalOpen} onOpenChange={setIsLoginModalOpen} />
     </div>
   );
 };
