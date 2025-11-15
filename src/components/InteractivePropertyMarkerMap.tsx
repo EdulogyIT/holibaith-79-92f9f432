@@ -45,8 +45,6 @@ export const InteractivePropertyMarkerMap = ({
 }: InteractivePropertyMarkerMapProps) => {
   const navigate = useNavigate();
   const { formatPrice } = useCurrency();
-  const [zoomLevel, setZoomLevel] = useState(1);
-  const [panPosition, setPanPosition] = useState({ x: 0, y: 0 });
 
   const handleMarkerClick = (propertyId: string) => {
     navigate(`/property/${propertyId}`);
@@ -80,13 +78,9 @@ export const InteractivePropertyMarkerMap = ({
         <div className="map-container relative w-full h-[500px] bg-gradient-to-br from-blue-100 via-white to-green-50 dark:from-blue-950/30 dark:via-slate-900 dark:to-green-950/30 overflow-hidden">
           {/* Algeria map background */}
           <svg 
-            className="absolute inset-0 w-full h-full transition-transform duration-300" 
+            className="absolute inset-0 w-full h-full" 
             viewBox="0 0 100 100" 
             preserveAspectRatio="xMidYMid meet"
-            style={{
-              transform: `scale(${zoomLevel}) translate(${panPosition.x}px, ${panPosition.y}px)`,
-              cursor: 'grab'
-            }}
           >
             {/* Algeria country outline */}
             <path
@@ -130,39 +124,6 @@ export const InteractivePropertyMarkerMap = ({
             ))}
           </svg>
 
-          {/* Zoom Controls */}
-          <div className="absolute top-4 right-4 flex flex-col gap-2 bg-card/95 backdrop-blur border border-border rounded-lg p-2 shadow-lg z-20">
-            <Button
-              size="sm"
-              variant="outline"
-              className="h-8 w-8 p-0"
-              onClick={() => setZoomLevel(prev => Math.min(prev + 0.2, 3))}
-              disabled={zoomLevel >= 3}
-            >
-              <Plus className="h-4 w-4" />
-            </Button>
-            <Button
-              size="sm"
-              variant="outline"
-              className="h-8 w-8 p-0"
-              onClick={() => setZoomLevel(prev => Math.max(prev - 0.2, 0.5))}
-              disabled={zoomLevel <= 0.5}
-            >
-              <Minus className="h-4 w-4" />
-            </Button>
-            <Button
-              size="sm"
-              variant="outline"
-              className="h-8 w-8 p-0"
-              onClick={() => {
-                setZoomLevel(1);
-                setPanPosition({ x: 0, y: 0 });
-              }}
-            >
-              <RotateCcw className="h-4 w-4" />
-            </Button>
-          </div>
-
           {/* Property markers */}
           <div className="absolute inset-0 pointer-events-none">
             {properties.map((property, index) => {
@@ -173,10 +134,6 @@ export const InteractivePropertyMarkerMap = ({
               const offsetX = (index % 3 - 1) * 2;
               const offsetY = (Math.floor(index / 3) % 3 - 1) * 2;
               
-              // Calculate position with zoom and pan
-              const scaledX = (position.x * zoomLevel) + (panPosition.x / 10);
-              const scaledY = (position.y * zoomLevel) + (panPosition.y / 10);
-              
               return (
                 <button
                   key={property.id}
@@ -186,8 +143,8 @@ export const InteractivePropertyMarkerMap = ({
                   }}
                   style={{
                     position: 'absolute',
-                    left: `calc(${scaledX}% + ${offsetX}px)`,
-                    top: `calc(${scaledY}% + ${offsetY}px)`,
+                    left: `calc(${position.x}% + ${offsetX}px)`,
+                    top: `calc(${position.y}% + ${offsetY}px)`,
                     transform: 'translate(-50%, -50%)',
                   }}
                   className={`${colorClass} text-white px-3 py-1.5 rounded-full shadow-lg hover:shadow-2xl hover:brightness-110 transition-all duration-200 font-semibold text-xs whitespace-nowrap z-10 border-2 border-white dark:border-gray-800 pointer-events-auto`}
