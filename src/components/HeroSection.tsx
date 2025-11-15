@@ -330,7 +330,7 @@ const HeroSection = () => {
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center pt-24 sm:pt-20 md:pt-16">
         {/* Hero Content */}
-        <div className="max-w-6xl mx-auto mb-8 sm:mb-12">
+        <div className="max-w-6xl mx-auto mb-8 sm:mb-12 px-4">
           <div className="text-center mb-6 sm:mb-8">
             <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-playfair font-bold text-foreground mb-3 sm:mb-4 leading-tight px-2">
               {t('heroTrustTagline') || 'Holibayt'}
@@ -344,15 +344,15 @@ const HeroSection = () => {
           </div>
           
           {/* Mode Selector */}
-          <div className="mb-6 sm:mb-8 px-2">
-            <div className="inline-flex flex-wrap sm:flex-nowrap bg-card/90 backdrop-blur-md rounded-xl sm:rounded-2xl p-1 sm:p-1.5 border border-border/30 shadow-elegant justify-center gap-1 max-w-full">
+          <div className="mb-6 sm:mb-8 px-2 flex justify-center">
+            <div className="inline-flex flex-wrap sm:flex-nowrap bg-card/90 backdrop-blur-md rounded-xl sm:rounded-2xl p-1 sm:p-1.5 border border-border/30 shadow-elegant justify-center gap-1 max-w-full w-full sm:w-auto">
               {modes.map((mode) => {
                 const IconComponent = mode.icon;
                 return (
                   <button
                     key={mode.id}
                     onClick={() => setSelectedMode(mode.id)}
-                    className={`flex items-center gap-2 sm:gap-3 px-3 sm:px-6 py-2.5 sm:py-4 rounded-lg sm:rounded-xl font-inter font-semibold text-xs sm:text-sm md:text-base transition-all duration-300 min-h-[44px] sm:min-h-[48px] min-w-[85px] sm:min-w-[100px] ${
+                    className={`flex items-center justify-center gap-2 sm:gap-3 px-3 sm:px-6 py-2.5 sm:py-4 rounded-lg sm:rounded-xl font-inter font-semibold text-xs sm:text-sm md:text-base transition-all duration-300 min-h-[44px] sm:min-h-[48px] flex-1 sm:flex-initial sm:min-w-[100px] ${
                       selectedMode === mode.id
                         ? 'bg-primary text-primary-foreground shadow-lg scale-105'
                         : 'text-muted-foreground hover:text-foreground hover:bg-muted/30'
@@ -367,7 +367,7 @@ const HeroSection = () => {
           </div>
 
           {/* Dynamic Search Card */}
-<Card className="search-card max-w-3xl mx-auto p-4 sm:p-6 md:p-8 bg-card/90 backdrop-blur-md border-border/30 shadow-elegant rounded-2xl sm:rounded-3xl overflow-x-hidden">
+<Card className="search-card max-w-3xl mx-auto p-4 sm:p-6 md:p-8 bg-card/90 backdrop-blur-md border-border/30 shadow-elegant rounded-2xl sm:rounded-3xl overflow-x-hidden mx-4">
   <div className="flex flex-col gap-3 sm:gap-4">
     {/* Location Input with Autocomplete - Always full width */}
     <div className="relative w-full">
