@@ -77,14 +77,21 @@ export const InteractivePropertyMarkerMap = ({
 
   const handleMarkerHover = (property: Property, event: React.MouseEvent) => {
     setHoveredProperty(property);
-    const rect = event.currentTarget.getBoundingClientRect();
-    setHoveredPosition({ x: rect.left, y: rect.top });
+    const mapContainer = event.currentTarget.closest('.map-container');
+    const buttonRect = event.currentTarget.getBoundingClientRect();
+    if (mapContainer) {
+      const mapRect = mapContainer.getBoundingClientRect();
+      setHoveredPosition({ 
+        x: buttonRect.left - mapRect.left + buttonRect.width / 2, 
+        y: buttonRect.top - mapRect.top 
+      });
+    }
   };
 
   return (
     <div className="relative w-full">
       <Card className="overflow-hidden">
-        <div className="relative w-full h-[500px] bg-gradient-to-br from-blue-100 via-white to-green-50 dark:from-blue-950/30 dark:via-slate-900 dark:to-green-950/30 overflow-hidden">
+        <div className="map-container relative w-full h-[500px] bg-gradient-to-br from-blue-100 via-white to-green-50 dark:from-blue-950/30 dark:via-slate-900 dark:to-green-950/30 overflow-hidden">
           {/* Algeria map background */}
           <svg 
             className="absolute inset-0 w-full h-full transition-transform duration-300" 
@@ -214,10 +221,11 @@ export const InteractivePropertyMarkerMap = ({
           {/* Hover tooltip */}
           {hoveredProperty && (
             <div 
-              className="fixed bg-card border-2 border-border rounded-lg shadow-2xl p-3 z-50 pointer-events-none w-64"
+              className="absolute bg-card border-2 border-border rounded-lg shadow-2xl p-3 z-50 pointer-events-none w-64"
               style={{
                 left: `${hoveredPosition.x}px`,
-                top: `${hoveredPosition.y - 120}px`,
+                top: `${hoveredPosition.y - 140}px`,
+                transform: 'translateX(-50%)',
               }}
             >
               {hoveredProperty.images?.[0] && (
