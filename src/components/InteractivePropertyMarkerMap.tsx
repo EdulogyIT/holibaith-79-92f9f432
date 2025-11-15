@@ -45,8 +45,6 @@ export const InteractivePropertyMarkerMap = ({
 }: InteractivePropertyMarkerMapProps) => {
   const navigate = useNavigate();
   const { formatPrice } = useCurrency();
-  const [hoveredProperty, setHoveredProperty] = useState<Property | null>(null);
-  const [hoveredPosition, setHoveredPosition] = useState({ x: 0, y: 0, offsetX: 0, offsetY: 0 });
   const [zoomLevel, setZoomLevel] = useState(1);
   const [panPosition, setPanPosition] = useState({ x: 0, y: 0 });
 
@@ -75,21 +73,6 @@ export const InteractivePropertyMarkerMap = ({
     return cityCoordinates[city] || { x: 50, y: 50 };
   };
 
-  const handleMarkerHover = (
-    property: Property, 
-    scaledX: number, 
-    scaledY: number,
-    offsetX: number,
-    offsetY: number
-  ) => {
-    setHoveredProperty(property);
-    setHoveredPosition({ 
-      x: scaledX, 
-      y: scaledY,
-      offsetX,
-      offsetY
-    });
-  };
 
   return (
     <div className="relative w-full">
@@ -201,8 +184,6 @@ export const InteractivePropertyMarkerMap = ({
                     e.preventDefault();
                     handleMarkerClick(property.id);
                   }}
-                  onMouseEnter={() => handleMarkerHover(property, scaledX, scaledY, offsetX, offsetY)}
-                  onMouseLeave={() => setHoveredProperty(null)}
                   style={{
                     position: 'absolute',
                     left: `calc(${scaledX}% + ${offsetX}px)`,
@@ -220,36 +201,6 @@ export const InteractivePropertyMarkerMap = ({
               );
             })}
           </div>
-
-          {/* Hover tooltip */}
-          {hoveredProperty && (
-            <div 
-              className="absolute bg-card border-2 border-border rounded-lg shadow-2xl p-3 z-50 pointer-events-none w-64"
-              style={{
-                left: `calc(${hoveredPosition.x}% + ${hoveredPosition.offsetX}px)`,
-                top: `calc(${hoveredPosition.y}% + ${hoveredPosition.offsetY}px - 150px)`,
-                transform: 'translate(-50%, -100%)',
-              }}
-            >
-              {hoveredProperty.images?.[0] && (
-                <img 
-                  src={hoveredProperty.images[0]} 
-                  alt={hoveredProperty.title}
-                  className="w-full h-32 object-cover rounded-md mb-2"
-                />
-              )}
-              <p className="font-semibold text-sm line-clamp-1">{hoveredProperty.title}</p>
-              <p className="text-xs text-muted-foreground">{hoveredProperty.location}</p>
-              <p className="text-sm font-bold text-primary mt-1">
-                {formatPrice(
-                  typeof hoveredProperty.price === 'number' ? hoveredProperty.price : parseFloat(hoveredProperty.price),
-                  hoveredProperty.price_type,
-                  hoveredProperty.price_currency || 'DZD'
-                )}
-                {hoveredProperty.price_type !== 'total' && ` / ${hoveredProperty.price_type}`}
-              </p>
-            </div>
-          )}
 
           {/* Map legend */}
           <div className="absolute bottom-4 left-4 bg-card/95 backdrop-blur border border-border rounded-lg p-3 shadow-lg">
