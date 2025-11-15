@@ -2364,7 +2364,13 @@ const allTranslations = {
       noMessages: 'No messages',
       noContactRequests: 'You have not received any contact requests yet.',
       loadingMessages: 'Loading messages...',
-      calendar: 'Property Calendar'
+      calendar: 'Property Calendar',
+      title: 'Host',
+      hostDashboard: 'Host Dashboard',
+      totalEarnings: 'Total earnings from completed bookings',
+      getVerified: 'Get verified',
+      bookings: 'Bookings',
+      payoutsSettings: 'Payouts & Settings'
     },
 
     // Admin translations
