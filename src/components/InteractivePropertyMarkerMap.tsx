@@ -46,7 +46,7 @@ export const InteractivePropertyMarkerMap = ({
   const navigate = useNavigate();
   const { formatPrice } = useCurrency();
   const [hoveredProperty, setHoveredProperty] = useState<Property | null>(null);
-  const [hoveredPosition, setHoveredPosition] = useState({ x: 0, y: 0 });
+  const [hoveredPosition, setHoveredPosition] = useState({ x: 0, y: 0, offsetX: 0, offsetY: 0 });
   const [zoomLevel, setZoomLevel] = useState(1);
   const [panPosition, setPanPosition] = useState({ x: 0, y: 0 });
 
@@ -75,17 +75,20 @@ export const InteractivePropertyMarkerMap = ({
     return cityCoordinates[city] || { x: 50, y: 50 };
   };
 
-  const handleMarkerHover = (property: Property, event: React.MouseEvent) => {
+  const handleMarkerHover = (
+    property: Property, 
+    scaledX: number, 
+    scaledY: number,
+    offsetX: number,
+    offsetY: number
+  ) => {
     setHoveredProperty(property);
-    const mapContainer = event.currentTarget.closest('.map-container');
-    const buttonRect = event.currentTarget.getBoundingClientRect();
-    if (mapContainer) {
-      const mapRect = mapContainer.getBoundingClientRect();
-      setHoveredPosition({ 
-        x: buttonRect.left - mapRect.left + buttonRect.width / 2, 
-        y: buttonRect.top - mapRect.top 
-      });
-    }
+    setHoveredPosition({ 
+      x: scaledX, 
+      y: scaledY,
+      offsetX,
+      offsetY
+    });
   };
 
   return (
@@ -198,7 +201,7 @@ export const InteractivePropertyMarkerMap = ({
                     e.preventDefault();
                     handleMarkerClick(property.id);
                   }}
-                  onMouseEnter={(e) => handleMarkerHover(property, e)}
+                  onMouseEnter={() => handleMarkerHover(property, scaledX, scaledY, offsetX, offsetY)}
                   onMouseLeave={() => setHoveredProperty(null)}
                   style={{
                     position: 'absolute',
@@ -223,9 +226,9 @@ export const InteractivePropertyMarkerMap = ({
             <div 
               className="absolute bg-card border-2 border-border rounded-lg shadow-2xl p-3 z-50 pointer-events-none w-64"
               style={{
-                left: `${hoveredPosition.x}px`,
-                top: `${hoveredPosition.y - 140}px`,
-                transform: 'translateX(-50%)',
+                left: `calc(${hoveredPosition.x}% + ${hoveredPosition.offsetX}px)`,
+                top: `calc(${hoveredPosition.y}% + ${hoveredPosition.offsetY}px - 150px)`,
+                transform: 'translate(-50%, -100%)',
               }}
             >
               {hoveredProperty.images?.[0] && (
