@@ -328,7 +328,7 @@ const HeroSection = () => {
         <div className="absolute inset-0 bg-gradient-to-br from-background/40 via-background/30 to-background/35"></div>
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center pt-24 sm:pt-20 md:pt-16">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center pt-20 sm:pt-20 md:pt-16">
         {/* Hero Content */}
         <div className="max-w-6xl mx-auto mb-8 sm:mb-12 px-4">
           <div className="text-center mb-6 sm:mb-8">
