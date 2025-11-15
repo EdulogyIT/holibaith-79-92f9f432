@@ -9,6 +9,7 @@ import TestimonialsCarousel from "@/components/TestimonialsCarousel";
 import AIChatBox from "@/components/AIChatBox";
 import SEOHead from "@/components/SEOHead";
 import { HostAdsCarousel } from "@/components/HostAdsCarousel";
+import { AppInstallBanner } from "@/components/AppInstallBanner";
 
 const Index = () => {
   const schema = {
@@ -43,6 +44,7 @@ const Index = () => {
         schema={schema}
         canonicalUrl="https://holibayt.com"
       />
+      <AppInstallBanner />
       <Navigation />
       <main>
         <HeroSection />

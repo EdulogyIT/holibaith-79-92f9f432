@@ -32,6 +32,7 @@ import LoginPage from "./pages/auth/LoginPage";
 import RegisterPage from "./pages/auth/RegisterPage";
 import Bookings from "./pages/Bookings";
 import Profile from "./pages/Profile";
+import HostProfile from "./pages/HostProfile";
 import Messages from "./pages/Messages";
 import Wishlist from "./pages/Wishlist";
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -158,6 +159,14 @@ const App = () => (
                   <Profile />
                 </MaintenanceMode>
               </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/host/:userId"
+            element={
+              <MaintenanceMode>
+                <HostProfile />
+              </MaintenanceMode>
             }
           />
           <Route

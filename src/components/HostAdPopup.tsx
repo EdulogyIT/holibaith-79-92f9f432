@@ -77,11 +77,8 @@ export const HostAdPopup = () => {
   };
 
   const handleViewProfile = () => {
-    if (host) {
-      // Navigate to profile page with userId parameter
-      navigate(`/profile?userId=${host.id}`);
-      setOpen(false);
-    }
+    navigate(`/host/${host.id}`);
+    setOpen(false);
   };
 
   if (!host) return null;
