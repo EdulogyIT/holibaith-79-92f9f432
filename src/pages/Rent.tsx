@@ -1,6 +1,7 @@
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import RentHeroSearch from "@/components/RentHeroSearch";
+import { AppInstallBanner } from "@/components/AppInstallBanner";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { MapPin, Bed, Bath, Square, Loader2, ShieldCheck } from "lucide-react";
@@ -305,6 +306,7 @@ const Rent = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <AppInstallBanner />
       <Navigation />
       <main className="pt-[120px] md:pt-20">
         <RentHeroSearch onSearch={handleSearch} onFilterClick={() => setIsFilterModalOpen(true)} />
@@ -395,9 +397,22 @@ const Rent = () => {
             </div>
           </div>
 
-          {/* Mobile Layout - Stacked */}
+          {/* Mobile Layout - Stacked: Map First, then Cards */}
           <div className="lg:hidden space-y-6">
-            {/* Property Cards */}
+            {/* Map First - directly after search */}
+            <div className="h-[400px] rounded-2xl overflow-hidden ring-1 ring-border">
+              <LocalErrorBoundary
+                fallback={
+                  <div className="h-full flex items-center justify-center bg-muted/20 text-muted-foreground text-sm">
+                    Map unavailable
+                  </div>
+                }
+              >
+                <MapboxPropertyMap properties={filteredProperties || []} />
+              </LocalErrorBoundary>
+            </div>
+
+            {/* Property Cards Below Map */}
             <div>
               <div className="flex items-center justify-between mb-6 gap-4 flex-wrap">
                 <h2 className="text-xl font-bold">
@@ -449,22 +464,6 @@ const Rent = () => {
                   ))}
                 </div>
               )}
-            </div>
-
-            {/* Map Below */}
-            <div className="h-[400px] rounded-2xl overflow-hidden ring-1 ring-border">
-              <LocalErrorBoundary
-                fallback={
-                  <div className="w-full h-full bg-muted/20 flex items-center justify-center">
-                    <div className="text-center p-4">
-                      <MapPin className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
-                      <p className="text-sm text-muted-foreground">Map Unavailable</p>
-                    </div>
-                  </div>
-                }
-              >
-                <MapboxPropertyMap properties={filteredProperties || []} />
-              </LocalErrorBoundary>
             </div>
           </div>
         </section>
