@@ -39,7 +39,7 @@ const BookingCancel: React.FC = () => {
               <Link to="/">Return Home</Link>
             </Button>
             <Button variant="outline" asChild className="w-full">
-              <Link to="/rent">Browse Properties</Link>
+              <Link to="/hotels">Browse Properties</Link>
             </Button>
           </div>
         </CardContent>

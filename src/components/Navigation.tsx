@@ -72,14 +72,11 @@ const Navigation = ({ onLoginClick }: NavigationProps = {}) => {
             <Link to="/" className="text-foreground hover:text-primary transition-colors font-inter text-sm lg:text-base">
               {t('home')}
             </Link>
-            <Link to="/buy" className="text-foreground hover:text-primary transition-colors font-inter text-sm lg:text-base">
-              {t('buy')}
+            <Link to="/hotels" className="text-foreground hover:text-primary transition-colors font-inter text-sm lg:text-base">
+              {t('hotels')}
             </Link>
             <Link to="/short-stay" className="text-foreground hover:text-primary transition-colors font-inter text-sm lg:text-base">
               {t('shortStay')}
-            </Link>
-            <Link to="/rent" className="text-foreground hover:text-primary transition-colors font-inter text-sm lg:text-base">
-              {t('rent')}
             </Link>
             <Link to="/about" className="text-foreground hover:text-primary transition-colors font-inter text-sm lg:text-base">
               {t('about')}
@@ -242,17 +239,11 @@ const Navigation = ({ onLoginClick }: NavigationProps = {}) => {
               <Link to="/" className="text-foreground hover:text-primary transition-colors font-inter font-medium py-2 min-h-[44px] flex items-center" onClick={() => setIsMenuOpen(false)}>
                 {t('home')}
               </Link>
-              <Link to="/buy" className="text-foreground hover:text-primary transition-colors font-inter font-medium py-2 min-h-[44px] flex items-center" onClick={() => setIsMenuOpen(false)}>
-                {t('buy')}
+              <Link to="/hotels" className="text-foreground hover:text-primary transition-colors font-inter font-medium py-2 min-h-[44px] flex items-center" onClick={() => setIsMenuOpen(false)}>
+                {t('hotels')}
               </Link>
               <Link to="/short-stay" className="text-foreground hover:text-primary transition-colors font-inter font-medium py-2 min-h-[44px] flex items-center" onClick={() => setIsMenuOpen(false)}>
                 {t('shortStay')}
-              </Link>
-              <Link to="/rent" className="text-foreground hover:text-primary transition-colors font-inter font-medium py-2 min-h-[44px] flex items-center" onClick={() => setIsMenuOpen(false)}>
-                {t('rent')}
-              </Link>
-              <Link to="/holibayt-pay" className="text-foreground hover:text-primary transition-colors font-inter font-medium py-2 min-h-[44px] flex items-center" onClick={() => setIsMenuOpen(false)}>
-                {t('holibaytPayBrand')}
               </Link>
               <Link to="/about" className="text-foreground hover:text-primary transition-colors font-inter font-medium py-2 min-h-[44px] flex items-center" onClick={() => setIsMenuOpen(false)}>
                 {t('about')}

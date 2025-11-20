@@ -20,7 +20,7 @@ const HeroSection = () => {
   const { t } = useLanguage();
   const { getCurrencySymbol, formatPrice } = useCurrency();
   const navigate = useNavigate();
-  const [selectedMode, setSelectedMode] = useState<'buy' | 'rent' | 'stay'>('stay');
+  const [selectedMode, setSelectedMode] = useState<'hotels' | 'stay'>('stay');
   const [isCheckInOpen, setIsCheckInOpen] = useState(false);
   const [isCheckOutOpen, setIsCheckOutOpen] = useState(false);
   
@@ -106,33 +106,19 @@ const HeroSection = () => {
 
   const modes = [
     {
-      id: 'buy' as const,
+      id: 'hotels' as const,
       icon: Home,
-      label: t('buy')
+      label: t('hotels')
     },
     {
       id: 'stay' as const,
       icon: Bed,
       label: t('shortStay')
-    },
-    {
-      id: 'rent' as const,
-      icon: Key,
-      label: t('rent')
     }
   ];
 
   const getSearchPlaceholder = () => {
-    switch (selectedMode) {
-      case 'buy':
-        return t('cityNeighborhood');
-      case 'rent':
-        return t('whereToRent');
-      case 'stay':
-        return t('stayDestination');
-      default:
-        return t('cityNeighborhood');
-    }
+    return t('searchPlaceholder');
   };
 
   const renderSearchFields = () => {

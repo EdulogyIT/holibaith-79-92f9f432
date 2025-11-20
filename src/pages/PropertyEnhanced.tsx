@@ -29,8 +29,6 @@ import { PropertyHighlights } from "@/components/PropertyHighlights";
 import { KeyDetailsTable } from "@/components/KeyDetailsTable";
 import { VerifiedOwnerSection } from "@/components/VerifiedOwnerSection";
 import { HostDetailsSection } from "@/components/HostDetailsSection";
-import { WhyBuyWithHolibayt } from "@/components/WhyBuyWithHolibayt";
-import { WhyRentWithHolibayt } from "@/components/WhyRentWithHolibayt";
 import { HolibaytPayExplainer } from "@/components/HolibaytPayExplainer";
 import { SimilarProperties } from "@/components/SimilarProperties";
 import { RecentlySoldRented } from "@/components/RecentlySoldRented";
@@ -494,9 +492,6 @@ const PropertyEnhanced = () => {
                 <Separator />
               </>
             )}
-
-            {/* Why buy/rent */}
-            {isBuy ? <WhyBuyWithHolibayt /> : isRent ? <WhyRentWithHolibayt /> : null}
 
             {/* Similar / recent */}
             <SimilarProperties
