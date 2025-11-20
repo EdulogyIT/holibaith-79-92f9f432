@@ -95,28 +95,16 @@ const Navigation = ({ onLoginClick }: NavigationProps = {}) => {
               {t("home")}
             </Link>
             <Link
-              to="/buy"
+              to="/hotels"
               className="text-foreground hover:text-primary transition-colors font-inter text-sm lg:text-base"
             >
-              {t("buy")}
+              {t("hotels")}
             </Link>
             <Link
               to="/short-stay"
               className="text-foreground hover:text-primary transition-colors font-inter text-sm lg:text-base"
             >
               {t("shortStay")}
-            </Link>
-            <Link
-              to="/rent"
-              className="text-foreground hover:text-primary transition-colors font-inter text-sm lg:text-base"
-            >
-              {t("rent")}
-            </Link>
-            <Link
-              to="/holibayt-pay"
-              className="text-foreground hover:text-primary transition-colors font-inter text-sm lg:text-base"
-            >
-              {t("holibaytPayBrand")}
             </Link>
             <Link
               to="/about"
@@ -254,7 +242,7 @@ const Navigation = ({ onLoginClick }: NavigationProps = {}) => {
                       <Heart className="h-4 w-4 mr-2" />
                       {t("wishlist")}
                     </DropdownMenuItem>
-                    {hasRole("admin") ? (
+                    {hasRole("admin") && (
                       <DropdownMenuItem
                         onClick={() => navigate("/publish-property")}
                         className="min-h-[44px]"
@@ -262,7 +250,7 @@ const Navigation = ({ onLoginClick }: NavigationProps = {}) => {
                         <Home className="h-4 w-4 mr-2" />
                         {t("publishProperty")}
                       </DropdownMenuItem>
-                    ) : null}
+                    )}
                     <DropdownMenuItem
                       onClick={() => navigate("/settings")}
                       className="min-h-[44px]"
@@ -335,11 +323,11 @@ const Navigation = ({ onLoginClick }: NavigationProps = {}) => {
                 {t("home")}
               </Link>
               <Link
-                to="/buy"
+                to="/hotels"
                 className="text-foreground hover:text-primary transition-colors font-inter font-medium py-2 min-h-[44px] flex items-center"
                 onClick={() => setIsMenuOpen(false)}
               >
-                {t("buy")}
+                {t("hotels")}
               </Link>
               <Link
                 to="/short-stay"
@@ -347,20 +335,6 @@ const Navigation = ({ onLoginClick }: NavigationProps = {}) => {
                 onClick={() => setIsMenuOpen(false)}
               >
                 {t("shortStay")}
-              </Link>
-              <Link
-                to="/rent"
-                className="text-foreground hover:text-primary transition-colors font-inter font-medium py-2 min-h-[44px] flex items-center"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                {t("rent")}
-              </Link>
-              <Link
-                to="/holibayt-pay"
-                className="text-foreground hover:text-primary transition-colors font-inter font-medium py-2 min-h-[44px] flex items-center"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                {t("holibaytPayBrand")}
               </Link>
               <Link
                 to="/about"
