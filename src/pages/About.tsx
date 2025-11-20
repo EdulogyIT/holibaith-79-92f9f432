@@ -141,10 +141,10 @@ const About = () => {
               className="mt-8 flex items-center justify-center gap-3 flex-wrap"
             >
               <Button asChild size="lg">
-                <Link to="/hotels">{tx("findHotels", "Find Hotels")}</Link>
+                <Link to="/buy">{tx("buyProperty", "Buy a property")}</Link>
               </Button>
               <Button asChild variant="secondary" size="lg">
-                <Link to="/short-stay">{tx("shortStayRental", "Short Stay Rentals")}</Link>
+                <Link to="/rent">{tx("rentProperty", "Rent a home")}</Link>
               </Button>
             </motion.div>
           </div>

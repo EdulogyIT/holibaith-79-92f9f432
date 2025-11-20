@@ -73,7 +73,7 @@ export default function LegalProcess() {
                     <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
                 </Link>
-                <Link to="/hotels">
+                <Link to="/buy">
                   <Button size="lg" variant="outline" className="w-full sm:w-auto">
                     Browse Properties
                   </Button>
