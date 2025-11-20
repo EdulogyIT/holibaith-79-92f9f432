@@ -1,7 +1,6 @@
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import HeroSection from "@/components/HeroSection";
-import QuickAccessSection from "@/components/QuickAccessSection";
 import ServicesSection from "@/components/ServicesSection";
 import CitiesSection from "@/components/CitiesSection";
 import WhyChooseSection from "@/components/WhyChooseSection";
@@ -48,9 +47,6 @@ const Index = () => {
       <Navigation />
       <main>
         <HeroSection />
-        <div className="py-1">
-          <QuickAccessSection />
-        </div>
         <div className="py-1">
           <WhyChooseSection />
         </div>

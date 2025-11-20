@@ -17,8 +17,7 @@ const allTranslations = {
   FR: {
     // Navigation
     home: 'Accueil',
-    buy: 'Acheter',
-    rent: 'Louer',
+    hotels: 'Hôtels',
     shortStay: 'Court séjour',
     findDreamProperty: 'Trouvez la Propriété de Vos Rêves',
     buyHeroDescription: 'Découvrez des propriétés exceptionnelles à vendre à travers l\'Algérie avec nos conseils d\'experts.',
@@ -1306,9 +1305,10 @@ const allTranslations = {
   EN: {
     // Navigation
     home: 'Home',
-    buy: 'Buy',
-    rent: 'Rent',
+    hotels: 'Hotels',
     shortStay: 'Short Stay',
+    findPerfectHotel: 'Find Your Perfect Hotel',
+    hotelHeroDescription: 'Discover exceptional hotels and accommodations across Algeria.',
     findDreamProperty: 'Find Your Dream Property',
     buyHeroDescription: 'Discover exceptional properties for sale across Algeria with our expert guidance.',
     findPerfectRental: 'Find Your Perfect Rental',
@@ -2557,9 +2557,10 @@ const allTranslations = {
   AR: {
     // Navigation
     home: 'الرئيسية',
-    buy: 'شراء',
-    rent: 'إيجار',
+    hotels: 'فنادق',
     shortStay: 'إقامة قصيرة',
+    findPerfectHotel: 'اعثر على فندقك المثالي',
+    hotelHeroDescription: 'اكتشف فنادق وأماكن إقامة استثنائية في جميع أنحاء الجزائر.',
     findDreamProperty: 'اعثر على عقارك المثالي',
     buyHeroDescription: 'اكتشف عقارات استثنائية للبيع في جميع أنحاء الجزائر مع إرشادات خبرائنا.',
     findPerfectRental: 'اعثر على إيجارك المثالي',
