@@ -126,16 +126,16 @@ const CitiesSection = () => {
         {/* Section Header */}
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-playfair font-bold text-foreground mb-4">
-            {t('exploreByTitle')} <span className="text-primary">{t('citiesTitle')}</span>
+            {t('exploreByCityTitle')}
           </h2>
-          <p className="text-lg text-muted-foreground font-inter font-light max-w-2xl mx-auto">
-            {t('citiesDescription')}
+          <p className="text-lg text-muted-foreground font-inter font-light max-w-3xl mx-auto">
+            {t('exploreByCitySubtitle')}
           </p>
         </div>
 
-        {/* Cities Grid */}
+        {/* Cities Grid - Always show 4 cities */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {displayedCities.map((city) => (
+          {cities.map((city) => (
             <Card 
               key={city.id} 
               className="group relative overflow-hidden border-0 hover:shadow-elegant transition-all duration-300 hover:-translate-y-2 cursor-pointer"
@@ -181,19 +181,15 @@ const CitiesSection = () => {
           ))}
         </div>
 
-        {/* Bottom CTA */}
+        {/* Bottom CTA - Simple Link */}
         <div className="text-center mt-12">
-          <p className="text-muted-foreground font-inter text-sm mb-4">
-            {showAllCities ? `${allCities.length} ${t('citiesAvailable')}` : `${allCities.length} ${t('citiesAvailable')}`}
-          </p>
-          <Button 
-            variant="outline" 
-            size="lg" 
-            className="font-inter font-medium"
-            onClick={() => setShowAllCities(!showAllCities)}
+          <button
+            onClick={() => navigate('/cities')}
+            className="text-primary hover:text-primary/80 font-inter font-medium inline-flex items-center gap-2 transition-colors duration-300 group"
           >
-            {showAllCities ? t('showLess') : t('seeAllCities')}
-          </Button>
+            <span>{t('viewAllDestinations')}</span>
+            <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform duration-300" />
+          </button>
         </div>
       </div>
     </section>

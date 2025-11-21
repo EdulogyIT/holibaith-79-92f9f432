@@ -78,6 +78,38 @@ const allTranslations = {
     searchPlaceholder: 'ex : Alger, Oran, Constantine…',
     searchPlaceholderExample: 'par ex., Alger, Oran, Constantine…',
     
+    // New Hero Section
+    discoverAlgeriaDifferently: 'Découvrez l\'Algérie différemment.',
+    hotelsAndVerifiedHomes: 'Hôtels et maisons vérifiées à travers l\'Algérie.',
+    whereTo: 'Où aller ?',
+    noBookingFees: 'Pas de frais de réservation. Garantie du meilleur prix. Confirmation instantanée.',
+    hotels: 'Hôtels',
+    
+    // Two Ways Section
+    twoWaysTitle: 'Deux façons de découvrir l\'Algérie',
+    twoWaysSubtitle: 'Que vous recherchiez le raffinement des hôtels de luxe ou l\'intimité des maisons vérifiées, Holibayt sélectionne des séjours exceptionnels adaptés à votre voyage.',
+    
+    // Hotels Card
+    hotelsCardTitle: 'Hôtels',
+    hotelsCardDesc: 'Hôtels cinq étoiles et propriétés boutique offrant une hospitalité complète, un concierge professionnel et des équipements de classe mondiale.',
+    hotelsBullet1: 'Service professionnel & réception 24/7',
+    hotelsBullet2: 'Équipements et restaurants premium',
+    hotelsBullet3: 'Services de conciergerie et de voyage',
+    hotelsBullet4: 'Ménage quotidien',
+    
+    // Short Stay Card
+    shortStayCardTitle: 'Court séjour',
+    shortStayCardDesc: 'Maisons, appartements et villas vérifiés offrant des expériences locales authentiques avec le confort et l\'intimité de votre propre espace.',
+    shortStayBullet1: 'Chaque maison personnellement vérifiée par notre équipe',
+    shortStayBullet2: 'Propriétés uniques avec caractère local',
+    shortStayBullet3: 'Cuisines complètes & équipements de type maison',
+    shortStayBullet4: 'Options de check-in flexibles',
+    
+    // Cities Section
+    exploreByCityTitle: 'Explorer par ville',
+    exploreByCitySubtitle: 'Découvrez le caractère unique des destinations les plus captivantes d\'Algérie',
+    viewAllDestinations: 'Voir toutes les destinations',
+    
     // Trust Indicators
     trustVerifiedListings: '100% Annonces vérifiées',
     trustPaymentsProtected: 'Paiements protégés',
@@ -1356,6 +1388,38 @@ const allTranslations = {
     fundsProtected: 'Funds Protected',
     bookedOn: 'Booked on',
     totalAmount: 'Total Amount',
+    
+    // New Hero Section
+    discoverAlgeriaDifferently: 'Discover Algeria differently.',
+    hotelsAndVerifiedHomes: 'Hotels and verified homes across Algeria.',
+    whereTo: 'Where to?',
+    noBookingFees: 'No booking fees. Best price guarantee. Instant confirmation.',
+    hotels: 'Hotels',
+    
+    // Two Ways Section
+    twoWaysTitle: 'Two ways to experience Algeria',
+    twoWaysSubtitle: 'Whether you seek the refinement of luxury hotels or the intimacy of verified homes, Holibayt curates exceptional stays tailored to your journey.',
+    
+    // Hotels Card
+    hotelsCardTitle: 'Hotels',
+    hotelsCardDesc: 'Curated five-star hotels and boutique properties offering full-service hospitality, professional concierge, and world-class amenities.',
+    hotelsBullet1: 'Professional service & 24/7 reception',
+    hotelsBullet2: 'Premium amenities & dining options',
+    hotelsBullet3: 'Concierge & travel services',
+    hotelsBullet4: 'Daily housekeeping',
+    
+    // Short Stay Card
+    shortStayCardTitle: 'Short Stay',
+    shortStayCardDesc: 'Verified homes, apartments, and villas offering authentic local experiences with the comfort and privacy of your own space.',
+    shortStayBullet1: 'Every home personally verified by our team',
+    shortStayBullet2: 'Unique properties with local character',
+    shortStayBullet3: 'Full kitchens & home-like amenities',
+    shortStayBullet4: 'Flexible check-in options',
+    
+    // Cities Section
+    exploreByCityTitle: 'Explore by City',
+    exploreByCitySubtitle: 'Discover the unique character of Algeria\'s most captivating destinations',
+    viewAllDestinations: 'View all destinations',
     
     // Holibayt Pay
     holibaytPayExplainerTitle: "Holibayt Pay Protection",
@@ -2663,6 +2727,38 @@ const allTranslations = {
     strictDetail2: "لا استرداد إذا تم الإلغاء خلال 7 أيام",
     strictDetail3: "لا استرداد في حالة عدم الحضور",
     strictDetail4: "جميع الرسوم غير قابلة للاسترداد",
+    
+    // New Hero Section
+    discoverAlgeriaDifferently: 'اكتشف الجزائر بشكل مختلف.',
+    hotelsAndVerifiedHomes: 'فنادق ومنازل موثقة في جميع أنحاء الجزائر.',
+    whereTo: 'إلى أين؟',
+    noBookingFees: 'بدون رسوم حجز. ضمان أفضل سعر. تأكيد فوري.',
+    hotels: 'فنادق',
+    
+    // Two Ways Section
+    twoWaysTitle: 'طريقتان لتجربة الجزائر',
+    twoWaysSubtitle: 'سواء كنت تبحث عن فخامة الفنادق الفاخرة أو ألفة المنازل الموثقة، يقدم هوليبايت إقامات استثنائية مصممة خصيصاً لرحلتك.',
+    
+    // Hotels Card
+    hotelsCardTitle: 'فنادق',
+    hotelsCardDesc: 'فنادق خمس نجوم مختارة وعقارات بوتيك تقدم ضيافة شاملة وخدمة كونسيرج محترفة ووسائل راحة عالمية المستوى.',
+    hotelsBullet1: 'خدمة احترافية واستقبال 24/7',
+    hotelsBullet2: 'وسائل راحة فاخرة وخيارات طعام',
+    hotelsBullet3: 'خدمات كونسيرج وسفر',
+    hotelsBullet4: 'تنظيف يومي',
+    
+    // Short Stay Card
+    shortStayCardTitle: 'إقامة قصيرة',
+    shortStayCardDesc: 'منازل وشقق وفيلات موثقة تقدم تجارب محلية أصيلة مع راحة وخصوصية مساحتك الخاصة.',
+    shortStayBullet1: 'كل منزل تم التحقق منه شخصياً من قبل فريقنا',
+    shortStayBullet2: 'عقارات فريدة ذات طابع محلي',
+    shortStayBullet3: 'مطابخ كاملة ووسائل راحة منزلية',
+    shortStayBullet4: 'خيارات تسجيل وصول مرنة',
+    
+    // Cities Section
+    exploreByCityTitle: 'استكشف حسب المدينة',
+    exploreByCitySubtitle: 'اكتشف الطابع الفريد لأكثر الوجهات الجزائرية جاذبية',
+    viewAllDestinations: 'عرض جميع الوجهات',
     
     // Host Details
     aboutTheHost: "عن المضيف",
