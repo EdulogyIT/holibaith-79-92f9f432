@@ -128,121 +128,7 @@ const HeroSection = () => {
     }
   };
 
-  const renderSearchFields = () => {
-    switch (selectedMode) {
-      case 'hotels':
-        return (
-          <>
-            <div className="flex-1">
-              <select 
-                className="w-full h-10 sm:h-12 px-3 py-2 bg-background border border-input rounded-md font-inter text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent ring-offset-background"
-                value={formData.propertyType}
-                onChange={(e) => updateFormField('propertyType', e.target.value)}
-              >
-                <option value="">{t('propertyType')}</option>
-                <option value="apartment">{t('apartment')}</option>
-                <option value="house">{t('house')}</option>
-                <option value="villa">{t('villa')}</option>
-                <option value="terrain">{t('land')}</option>
-              </select>
-            </div>
-            <div className="flex-1">
-              <div className="relative">
-                <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                <Input
-                  type="text"
-                  placeholder={`${t('maxBudget')} (${getCurrencySymbol()})`}
-                  className="h-10 sm:h-12 pl-10 font-inter text-sm"
-                  value={formData.budget}
-                  onChange={(e) => updateFormField('budget', e.target.value)}
-                />
-              </div>
-            </div>
-          </>
-        );
-      case 'stay':
-        return (
-          <div className="flex flex-col sm:flex-row flex-1 gap-2 sm:gap-3">
-            <div className="flex-1">
-              <Popover open={isCheckInOpen} onOpenChange={setIsCheckInOpen}>
-                <PopoverTrigger asChild>
-                <Button
-                    variant="outline"
-                    className={cn(
-                      "w-full justify-start text-left font-inter text-sm h-12 bg-background border border-input",
-                      !formData.dateRange?.from && "text-muted-foreground"
-                    )}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    <span className="truncate">{formData.dateRange?.from ? format(formData.dateRange.from, "dd/MM/yy") : t('checkIn')}</span>
-                  </Button>
-                </PopoverTrigger>
-              <PopoverContent
-  className="p-0 z-[100] w-[92vw] max-w-[360px] sm:w-auto sm:max-w-[640px]"
-  align="center"
-  sideOffset={8}
-  collisionPadding={12}
->
-  <div className="max-h-[70vh] overflow-auto">
-    <DateRangePicker
-      value={formData.dateRange}
-      onChange={(range) => updateFormField('dateRange', range)}
-      allowPast={false}
-      onApply={() => setIsCheckInOpen(false)}
-    />
-  </div>
-</PopoverContent>
-
-
-              </Popover>
-            </div>
-            <div className="flex-1">
-              <Popover open={isCheckOutOpen} onOpenChange={setIsCheckOutOpen}>
-                <PopoverTrigger asChild>
-                <Button
-                    variant="outline"
-                    className={cn(
-                      "w-full justify-start text-left font-inter text-sm h-12 bg-background border border-input",
-                      !formData.dateRange?.to && "text-muted-foreground"
-                    )}
-                    disabled={!formData.dateRange?.from}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    <span className="truncate">{formData.dateRange?.to ? format(formData.dateRange.to, "dd/MM/yy") : t('checkOut')}</span>
-                  </Button>
-                </PopoverTrigger>
-               <PopoverContent
-  className="p-0 z-[100] w-[92vw] max-w-[360px] sm:w-auto sm:max-w-[640px]"
-  align="center"
-  sideOffset={8}
-  collisionPadding={12}
->
-  <div className="max-h-[70vh] overflow-auto">
-    <DateRangePicker
-      value={formData.dateRange}
-      onChange={(range) => updateFormField('dateRange', range)}
-      allowPast={false}
-      onApply={() => setIsCheckOutOpen(false)}
-    />
-  </div>
-</PopoverContent>
-
-
-              </Popover>
-            </div>
-            <div className="flex-1">
-                <GuestsSelector
-                  value={formData.travelers}
-                  onChange={(value) => updateFormField('travelers', value)}
-                  keepOpen={true}
-                />
-            </div>
-          </div>
-        );
-      default:
-        return null;
-    }
-  };
+  // Removed renderSearchFields - fields are now directly in JSX
 
   const handleSearch = () => {
     if (!isFormValid()) {
@@ -290,14 +176,11 @@ const HeroSection = () => {
         {/* Hero Content */}
         <div className="max-w-6xl mx-auto mb-8 sm:mb-12 px-4">
           <div className="text-center mb-6 sm:mb-8">
-            <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-playfair font-bold text-foreground mb-3 sm:mb-4 leading-tight px-2">
-              {t('heroTrustTagline') || 'Holibayt'}
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-playfair font-medium text-foreground mb-3 sm:mb-4 leading-tight px-2">
+              {t('discoverAlgeriaDifferently')}
             </h1>
-            <p className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-playfair font-medium text-primary mb-4 sm:mb-6 leading-tight px-2">
-              {t('heroSubheading') || 'Buy. Rent. Live Algeria safely with verified listings and secure payments'}
-            </p>
-            <p className="text-base sm:text-lg md:text-xl text-muted-foreground font-inter font-light max-w-3xl mx-auto leading-relaxed px-4">
-              {t('heroTrustDescription') || 'Holibayt combines verified owners, legal support, and escrow protection for every transaction.'}
+            <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground font-inter font-light max-w-2xl mx-auto leading-relaxed px-4 mb-6">
+              {t('hotelsAndVerifiedHomes')}
             </p>
           </div>
           
@@ -325,56 +208,108 @@ const HeroSection = () => {
           </div>
 
           {/* Dynamic Search Card */}
-<Card className="search-card max-w-3xl mx-auto p-4 sm:p-6 md:p-8 bg-card/90 backdrop-blur-md border-border/30 shadow-elegant rounded-2xl sm:rounded-3xl overflow-x-hidden mx-4">
-  <div className="flex flex-col gap-3 sm:gap-4">
-    {/* Location Input with Autocomplete - Always full width */}
+<Card className="search-card max-w-4xl mx-auto p-4 sm:p-6 md:p-8 bg-card/95 backdrop-blur-md border-border/30 shadow-2xl rounded-2xl sm:rounded-3xl overflow-x-hidden mx-4">
+  <div className="flex flex-col gap-4">
+    {/* Location Input - Full Width Row */}
     <div className="relative w-full">
       <LocationAutocomplete
         value={formData.location}
         onChange={(value) => updateFormField('location', value)}
-        placeholder={t('searchPlaceholder')}
-        className="w-full h-12 sm:h-14 font-inter text-sm"
+        placeholder={t('whereTo')}
+        className="w-full h-14 sm:h-16 font-inter text-base pl-12"
       />
+      <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
     </div>
 
-    {/* Dynamic Fields - Stack on mobile, row on tablet+ */}
-    <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch">
-      {renderSearchFields()}
+    {/* Date and Guests Row */}
+    {selectedMode === 'stay' && (
+      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+        <div className="flex-1">
+          <Popover open={isCheckInOpen} onOpenChange={setIsCheckInOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                className={cn(
+                  "w-full justify-start text-left font-inter h-14 sm:h-16 bg-background border-input",
+                  !formData.dateRange?.from && "text-muted-foreground"
+                )}
+              >
+                <CalendarIcon className="mr-3 h-5 w-5" />
+                <span>{formData.dateRange?.from ? format(formData.dateRange.from, "MMM dd, yyyy") : t('checkIn')}</span>
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="p-0 z-[100] w-auto" align="start">
+              <DateRangePicker
+                value={formData.dateRange}
+                onChange={(range) => updateFormField('dateRange', range)}
+                allowPast={false}
+                onApply={() => setIsCheckInOpen(false)}
+              />
+            </PopoverContent>
+          </Popover>
+        </div>
+        
+        <div className="flex-1">
+          <Popover open={isCheckOutOpen} onOpenChange={setIsCheckOutOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                className={cn(
+                  "w-full justify-start text-left font-inter h-14 sm:h-16 bg-background border-input",
+                  !formData.dateRange?.to && "text-muted-foreground"
+                )}
+                disabled={!formData.dateRange?.from}
+              >
+                <CalendarIcon className="mr-3 h-5 w-5" />
+                <span>{formData.dateRange?.to ? format(formData.dateRange.to, "MMM dd, yyyy") : t('selectDate')}</span>
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="p-0 z-[100] w-auto" align="start">
+              <DateRangePicker
+                value={formData.dateRange}
+                onChange={(range) => updateFormField('dateRange', range)}
+                allowPast={false}
+                onApply={() => setIsCheckOutOpen(false)}
+              />
+            </PopoverContent>
+          </Popover>
+        </div>
+        
+        <div className="flex-1">
+          <GuestsSelector
+            value={formData.travelers}
+            onChange={(value) => updateFormField('travelers', value)}
+            keepOpen={true}
+          />
+        </div>
+      </div>
+    )}
 
-      {/* Search Button */}
-      <Button 
-        onClick={handleSearch}
-        disabled={!isFormValid()}
-        className={cn(
-          "h-12 sm:h-14 px-6 sm:px-8 font-inter font-medium transition-all duration-300 w-full sm:w-auto sm:min-w-[140px]",
-          isFormValid() 
-            ? "bg-gradient-primary hover:shadow-elegant text-white" 
-            : "bg-gray-300 text-gray-500 cursor-not-allowed"
-        )}
-      >
-        <Search className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
-        <span className="text-sm sm:text-base">{t('search')}</span>
-      </Button>
-    </div>
+    {/* Search Button - Full Width */}
+    <Button 
+      onClick={handleSearch}
+      disabled={!isFormValid()}
+      size="lg"
+      className={cn(
+        "w-full h-14 sm:h-16 font-inter font-semibold text-base transition-all duration-300",
+        isFormValid() 
+          ? "bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:shadow-xl" 
+          : "bg-muted text-muted-foreground cursor-not-allowed"
+      )}
+    >
+      <Search className="mr-2 h-5 w-5" />
+      <span>{t('search')}</span>
+    </Button>
   </div>
 </Card>
 
-        </div>
+          {/* Bottom Tagline */}
+          <div className="mt-8 text-center">
+            <p className="text-sm md:text-base text-muted-foreground font-inter font-light">
+              {t('noBookingFees')}
+            </p>
+          </div>
 
-        {/* Quick Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8 max-w-3xl mx-auto px-4">
-          <div className="text-center">
-            <div className="text-2xl md:text-3xl lg:text-4xl font-playfair font-bold text-primary mb-2">10K+</div>
-            <div className="text-muted-foreground font-inter text-sm md:text-base">{t('availableProperties')}</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl md:text-3xl lg:text-4xl font-playfair font-bold text-primary mb-2">50K+</div>
-            <div className="text-muted-foreground font-inter text-sm md:text-base">{t('satisfiedUsers')}</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl md:text-3xl lg:text-4xl font-playfair font-bold text-primary mb-2">26</div>
-            <div className="text-muted-foreground font-inter text-sm md:text-base">{t('wilayasCovered')}</div>
-          </div>
         </div>
       </div>
     </section>

@@ -1,14 +1,10 @@
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import HeroSection from "@/components/HeroSection";
-import QuickAccessSection from "@/components/QuickAccessSection";
-import ServicesSection from "@/components/ServicesSection";
 import CitiesSection from "@/components/CitiesSection";
-import WhyChooseSection from "@/components/WhyChooseSection";
-import TestimonialsCarousel from "@/components/TestimonialsCarousel";
+import TwoWaysSection from "@/components/TwoWaysSection";
 import AIChatBox from "@/components/AIChatBox";
 import SEOHead from "@/components/SEOHead";
-import { HostAdsCarousel } from "@/components/HostAdsCarousel";
 import { AppInstallBanner } from "@/components/AppInstallBanner";
 
 const Index = () => {
@@ -48,24 +44,8 @@ const Index = () => {
       <Navigation />
       <main>
         <HeroSection />
-        <div className="py-1">
-          <QuickAccessSection />
-        </div>
-        <div className="py-1">
-          <WhyChooseSection />
-        </div>
-        <div className="py-1">
-          <TestimonialsCarousel />
-        </div>
-        <div className="py-1">
-          <HostAdsCarousel />
-        </div>
-        <div className="py-1">
-          <ServicesSection />
-        </div>
-        <div className="py-2">
-          <CitiesSection />
-        </div>
+        <TwoWaysSection />
+        <CitiesSection />
       </main>
       <Footer />
       <AIChatBox />
