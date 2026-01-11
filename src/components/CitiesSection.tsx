@@ -1,6 +1,5 @@
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { MapPin, ArrowRight } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useState, useEffect } from "react";
@@ -13,10 +12,8 @@ import { supabase } from "@/integrations/supabase/client";
 const CitiesSection = () => {
   const navigate = useNavigate();
   const { t, currentLang } = useLanguage();
-  const [showAllCities, setShowAllCities] = useState(false);
   const [cityCounts, setCityCounts] = useState<Record<string, number>>({});
 
-  // Fetch dynamic property counts
   useEffect(() => {
     const fetchPropertyCounts = async () => {
       const { data, error } = await supabase
@@ -37,95 +34,48 @@ const CitiesSection = () => {
     fetchPropertyCounts();
   }, []);
 
-  // Re-render when language changes
   useEffect(() => {
-    // Component will re-render when currentLang changes
+    // Re-render when language changes
   }, [currentLang]);
   
   const getCityPropertyCount = (cityId: string) => {
     const count = cityCounts[cityId.toLowerCase()] || 0;
-    return count > 0 ? `${count} ${t('availableProperties')}` : "0 " + t('availableProperties');
+    return `${count} ${t('propertiesCount')}`;
   };
 
   const cities = [
     {
       id: "alger",
       name: t('cityAlger'),
-      description: t('algerDescription'),
       properties: getCityPropertyCount("alger"),
-      image: algerImage,
-      color: "from-blue-500 to-blue-600"
+      image: algerImage
     },
     {
       id: "oran",
       name: t('cityOran'),
-      description: t('oranDescription'),
       properties: getCityPropertyCount("oran"),
-      image: oranImage,
-      color: "from-orange-500 to-red-500"
+      image: oranImage
     },
     {
       id: "constantine", 
       name: t('cityConstantine'),
-      description: t('constantineDescription'),
       properties: getCityPropertyCount("constantine"),
-      image: constantineImage,
-      color: "from-green-500 to-emerald-600"
-    },
-    {
-      id: "annaba",
-      name: t('cityAnnaba'),
-      description: t('annabaDescription'),
-      properties: getCityPropertyCount("annaba"), 
-      image: annabaImage,
-      color: "from-purple-500 to-pink-500"
-    }
-  ];
-
-  const allCities = [
-    ...cities,
-    {
-      id: "setif",
-      name: t('citySetif'),
-      description: t('setifDescription'),
-      properties: getCityPropertyCount("setif"),
-      image: algerImage,
-      color: "from-indigo-500 to-blue-600"
+      image: constantineImage
     },
     {
       id: "tlemcen",
       name: t('cityTlemcen'),
-      description: t('tlemcenDescription'),
       properties: getCityPropertyCount("tlemcen"),
-      image: oranImage,
-      color: "from-teal-500 to-green-600"
-    },
-    {
-      id: "bejaia",
-      name: t('cityBejaia'),
-      description: t('bejaiaDescription'),
-      properties: getCityPropertyCount("bejaia"),
-      image: annabaImage,
-      color: "from-cyan-500 to-blue-500"
-    },
-    {
-      id: "blida",
-      name: t('cityBlida'),
-      description: t('blidaDescription'),
-      properties: getCityPropertyCount("blida"),
-      image: constantineImage,
-      color: "from-rose-500 to-pink-600"
+      image: annabaImage
     }
   ];
 
-  const displayedCities = showAllCities ? allCities : cities;
-
   return (
-    <section className="py-16 md:py-20 bg-background">
+    <section className="py-16 md:py-20 bg-muted/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-playfair font-bold text-foreground mb-4">
+          <h2 className="text-3xl md:text-4xl font-playfair italic text-foreground mb-4">
             {t('exploreByCityTitle')}
           </h2>
           <p className="text-lg text-muted-foreground font-inter font-light max-w-3xl mx-auto">
@@ -133,50 +83,34 @@ const CitiesSection = () => {
           </p>
         </div>
 
-        {/* Cities Grid - Always show 4 cities */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* Cities Grid - Simple Cards */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
           {cities.map((city) => (
             <Card 
               key={city.id} 
-              className="group relative overflow-hidden border-0 hover:shadow-elegant transition-all duration-300 hover:-translate-y-2 cursor-pointer"
+              className="group relative overflow-hidden border-0 rounded-2xl hover:shadow-elegant transition-all duration-300 cursor-pointer aspect-[3/4]"
               onClick={() => navigate(`/city/${city.id}`)}
             >
               {/* City Image */}
-              <div className="relative h-48 overflow-hidden">
+              <div className="absolute inset-0">
                 <img 
                   src={city.image} 
-                  alt={`${city.name} - ${city.description}`}
-                  className="w-full h-full object-cover group-hover:scale-110 transform-gpu transition-transform duration-500"
+                  alt={city.name}
+                  className="w-full h-full object-cover group-hover:scale-105 transform-gpu transition-transform duration-500"
                 />
-                <div className={`absolute inset-0 bg-gradient-to-t ${city.color} opacity-60 group-hover:opacity-40 transition-opacity duration-300`}></div>
-                
-                {/* Overlay Content */}
-                <div className="absolute inset-0 flex flex-col justify-end p-4 text-white">
-                  <div className="flex items-center mb-2">
-                    <MapPin className="h-4 w-4 mr-1" />
-                    <span className="text-sm font-inter">{city.properties}</span>
-                  </div>
-                  <h3 className="text-xl font-playfair font-bold mb-1">{city.name}</h3>
-                  <p className="text-sm font-inter opacity-90">{city.description}</p>
-                </div>
+                {/* Simple Dark Bottom Gradient */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
               </div>
-
-              <CardContent className="p-4">
-                <Button 
-                  variant="outline" 
-                  className="w-full group/btn font-inter font-medium hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    navigate(`/city/${city.id}`);
-                  }}
-                >
-                  <span>{t('viewOnMap')}</span>
-                  <ArrowRight className="ml-2 h-4 w-4 group-hover/btn:translate-x-1 transition-transform duration-300" />
-                </Button>
-              </CardContent>
-
-              {/* Hover Effect Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+              
+              {/* Text Overlay - Bottom */}
+              <div className="absolute bottom-4 left-4 right-4 text-white">
+                <h3 className="text-xl md:text-2xl font-playfair font-semibold mb-1">
+                  {city.name}
+                </h3>
+                <p className="text-sm font-inter text-white/80">
+                  {city.properties}
+                </p>
+              </div>
             </Card>
           ))}
         </div>

@@ -109,6 +109,30 @@ const allTranslations = {
     exploreByCityTitle: 'Explorer par ville',
     exploreByCitySubtitle: 'Découvrez le caractère unique des destinations les plus captivantes d\'Algérie',
     viewAllDestinations: 'Voir toutes les destinations',
+    propertiesCount: 'propriétés',
+    
+    // Search Form Labels
+    destination: 'Destination',
+    checkInLabel: 'Arrivée',
+    checkOutLabel: 'Départ',
+    guestsLabel: 'Voyageurs',
+    
+    // Featured Stays Section
+    featuredStaysTitle: 'Séjours en vedette',
+    featuredStaysSubtitle: 'Hébergements triés sur le volet qui définissent le luxe et l\'authenticité',
+    featured: 'En vedette',
+    
+    // Why Choose Section - New Homepage
+    whyChooseTitleNew: 'Pourquoi choisir Holibayt',
+    whyChooseSubtitleNew: 'Redéfinir l\'hospitalité en Algérie avec une qualité sans compromis',
+    verifiedPropertiesTitle: 'Propriétés Vérifiées',
+    verifiedPropertiesDesc: 'Chaque propriété est personnellement inspectée et vérifiée par notre équipe pour garantir les plus hauts standards',
+    curatedExcellenceTitle: 'Excellence Sélectionnée',
+    curatedExcellenceDesc: 'Hébergements triés sur le volet représentant le meilleur de l\'hospitalité et du luxe algériens',
+    localExpertiseTitle: 'Expertise Locale',
+    localExpertiseDesc: 'Expériences authentiques guidées par des locaux qui connaissent et aiment leurs villes',
+    premiumServiceTitle: 'Service Premium',
+    premiumServiceDesc: 'Support dédié 24/7 assurant un voyage fluide de la réservation au départ',
     
     // Trust Indicators
     trustVerifiedListings: '100% Annonces vérifiées',
@@ -1420,6 +1444,30 @@ const allTranslations = {
     exploreByCityTitle: 'Explore by City',
     exploreByCitySubtitle: 'Discover the unique character of Algeria\'s most captivating destinations',
     viewAllDestinations: 'View all destinations',
+    propertiesCount: 'properties',
+    
+    // Search Form Labels
+    destination: 'Destination',
+    checkInLabel: 'Check-in',
+    checkOutLabel: 'Check-out',
+    guestsLabel: 'Guests',
+    
+    // Featured Stays Section
+    featuredStaysTitle: 'Featured Stays',
+    featuredStaysSubtitle: 'Handpicked accommodations that define luxury and authenticity',
+    featured: 'Featured',
+    
+    // Why Choose Section - New Homepage
+    whyChooseTitleNew: 'Why Choose Holibayt',
+    whyChooseSubtitleNew: 'Redefining hospitality in Algeria with uncompromising quality',
+    verifiedPropertiesTitle: 'Verified Properties',
+    verifiedPropertiesDesc: 'Every property is personally inspected and verified by our team to ensure the highest standards',
+    curatedExcellenceTitle: 'Curated Excellence',
+    curatedExcellenceDesc: 'Handpicked accommodations that represent the best of Algerian hospitality and luxury',
+    localExpertiseTitle: 'Local Expertise',
+    localExpertiseDesc: 'Authentic experiences guided by locals who know and love their cities',
+    premiumServiceTitle: 'Premium Service',
+    premiumServiceDesc: '24/7 dedicated support ensuring your journey is seamless from booking to checkout',
     
     // Holibayt Pay
     holibaytPayExplainerTitle: "Holibayt Pay Protection",
@@ -2759,8 +2807,30 @@ const allTranslations = {
     exploreByCityTitle: 'استكشف حسب المدينة',
     exploreByCitySubtitle: 'اكتشف الطابع الفريد لأكثر الوجهات الجزائرية جاذبية',
     viewAllDestinations: 'عرض جميع الوجهات',
+    propertiesCount: 'عقارات',
     
-    // Host Details
+    // Search Form Labels
+    destination: 'الوجهة',
+    checkInLabel: 'تسجيل الوصول',
+    checkOutLabel: 'تسجيل المغادرة',
+    guestsLabel: 'الضيوف',
+    
+    // Featured Stays Section
+    featuredStaysTitle: 'إقامات مميزة',
+    featuredStaysSubtitle: 'أماكن إقامة مختارة بعناية تحدد الفخامة والأصالة',
+    featured: 'مميز',
+    
+    // Why Choose Section - New Homepage
+    whyChooseTitleNew: 'لماذا تختار هوليبايت',
+    whyChooseSubtitleNew: 'إعادة تعريف الضيافة في الجزائر بجودة لا تقبل المساومة',
+    verifiedPropertiesTitle: 'عقارات موثقة',
+    verifiedPropertiesDesc: 'يتم فحص كل عقار والتحقق منه شخصياً من قبل فريقنا لضمان أعلى المعايير',
+    curatedExcellenceTitle: 'تميز مختار',
+    curatedExcellenceDesc: 'أماكن إقامة مختارة بعناية تمثل أفضل ما في الضيافة والفخامة الجزائرية',
+    localExpertiseTitle: 'خبرة محلية',
+    localExpertiseDesc: 'تجارب أصيلة بإرشاد محليين يعرفون ويحبون مدنهم',
+    premiumServiceTitle: 'خدمة مميزة',
+    premiumServiceDesc: 'دعم مخصص على مدار الساعة يضمن رحلة سلسة من الحجز حتى المغادرة',
     aboutTheHost: "عن المضيف",
     superhost: "مضيف متميز",
     reviews: "المراجعات",

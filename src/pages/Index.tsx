@@ -3,6 +3,8 @@ import Footer from "@/components/Footer";
 import HeroSection from "@/components/HeroSection";
 import CitiesSection from "@/components/CitiesSection";
 import TwoWaysSection from "@/components/TwoWaysSection";
+import WhyChooseSection from "@/components/WhyChooseSection";
+import FeaturedStaysSection from "@/components/FeaturedStaysSection";
 import AIChatBox from "@/components/AIChatBox";
 import SEOHead from "@/components/SEOHead";
 import { AppInstallBanner } from "@/components/AppInstallBanner";
@@ -46,6 +48,8 @@ const Index = () => {
         <HeroSection />
         <TwoWaysSection />
         <CitiesSection />
+        <WhyChooseSection />
+        <FeaturedStaysSection />
       </main>
       <Footer />
       <AIChatBox />
