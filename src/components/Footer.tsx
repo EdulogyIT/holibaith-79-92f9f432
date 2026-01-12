@@ -1,210 +1,120 @@
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { usePlatformSettings } from "@/contexts/PlatformSettingsContext";
-import { Facebook, Twitter, Instagram, Mail, Phone, MapPin } from "lucide-react";
-import footerBg from "@/assets/footer-background.jpg";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
 
 const Footer = () => {
   const { t } = useLanguage();
-  const { generalSettings } = usePlatformSettings();
 
   return (
-    <footer className="relative overflow-hidden border-t border-border/50 mt-4">
-      {/* Background Image */}
-      <div className="absolute inset-0">
-        <img 
-          src={footerBg} 
-          alt="Footer background" 
-          className="w-full h-full object-cover opacity-30"
-        />
-        <div className="absolute inset-0 bg-gradient-to-br from-background/90 via-background/85 to-primary/10"></div>
-      </div>
-      
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          {/* Company Info - Enhanced */}
-          <div className="space-y-6 md:col-span-1">
-            <div className="space-y-4">
-              <img 
-                src="/lovable-uploads/b974fb79-9873-41fb-b3ad-9b4bf38b8a77.png" 
-                alt="Holibayt Logo" 
-                className="h-20 w-auto hover:scale-105 transition-transform duration-300"
-              />
-              <p className="text-muted-foreground font-inter text-sm leading-relaxed">
-                {t('footerDescription')}
-              </p>
-            </div>
+    <footer className="bg-[#2F6B4F] text-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
+          {/* Logo & Tagline */}
+          <div className="space-y-4">
+            <img 
+              src="/lovable-uploads/b974fb79-9873-41fb-b3ad-9b4bf38b8a77.png" 
+              alt="Holibayt Logo" 
+              className="h-12 w-auto brightness-0 invert"
+            />
+            <p className="text-white/80 text-sm leading-relaxed max-w-xs">
+              {t('footerTagline') || "Discover Algeria differently. Premium hotels and verified homes across Algeria's most beautiful destinations."}
+            </p>
             
-            {/* Social Media - Enhanced */}
-            <div className="space-y-3">
-              <h4 className="font-semibold text-foreground font-playfair text-sm">{t('followUs')}</h4>
-              <div className="flex space-x-3">
-                <div className="p-2 rounded-lg bg-primary/10 hover:bg-primary hover:text-primary-foreground transition-all duration-300 cursor-pointer group">
-                  <Facebook className="h-5 w-5 group-hover:scale-110 transition-transform duration-300" />
-                </div>
-                <div className="p-2 rounded-lg bg-accent/10 hover:bg-accent hover:text-accent-foreground transition-all duration-300 cursor-pointer group">
-                  <Twitter className="h-5 w-5 group-hover:scale-110 transition-transform duration-300" />
-                </div>
-                <div className="p-2 rounded-lg bg-foreground/10 hover:bg-foreground hover:text-background transition-all duration-300 cursor-pointer group">
-                  <Instagram className="h-5 w-5 group-hover:scale-110 transition-transform duration-300" />
-                </div>
-              </div>
+            {/* Social Icons */}
+            <div className="flex items-center gap-3 pt-2">
+              <a href="#" className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">
+                <Facebook className="w-4 h-4" />
+              </a>
+              <a href="#" className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">
+                <Instagram className="w-4 h-4" />
+              </a>
+              <a href="#" className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">
+                <Twitter className="w-4 h-4" />
+              </a>
+              <a href="#" className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">
+                <Linkedin className="w-4 h-4" />
+              </a>
             </div>
           </div>
 
-          {/* Quick Links - Enhanced */}
-          <div className="space-y-6">
-            <h3 className="font-semibold text-foreground font-playfair text-lg">{t('quickLinks')}</h3>
-            <ul className="space-y-3 font-inter text-sm">
+          {/* Discover */}
+          <div className="space-y-4">
+            <h3 className="font-playfair text-lg">{t('discoverFooter') || "Discover"}</h3>
+            <ul className="space-y-2 text-sm text-white/80">
               <li>
-                <Link to="/buy" className="text-muted-foreground hover:text-primary transition-colors hover:translate-x-1 inline-block duration-300 py-1">
-                  {t('buy')}
-                </Link>
+                <Link to="/hotels" className="hover:text-white transition-colors">{t('hotels') || "Hotels"}</Link>
               </li>
               <li>
-                <Link to="/rent" className="text-muted-foreground hover:text-primary transition-colors hover:translate-x-1 inline-block duration-300 py-1">
-                  {t('rent')}
-                </Link>
+                <Link to="/short-stay" className="hover:text-white transition-colors">{t('shortStay') || "Short Stay"}</Link>
               </li>
               <li>
-                <Link to="/short-stay" className="text-muted-foreground hover:text-primary transition-colors hover:translate-x-1 inline-block duration-300 py-1">
-                  {t('shortStay')}
-                </Link>
+                <Link to="/city/algiers" className="hover:text-white transition-colors">{t('exploreFooter') || "Explore"} Algiers</Link>
               </li>
               <li>
-                <Link to="/about" className="text-muted-foreground hover:text-primary transition-colors hover:translate-x-1 inline-block duration-300 py-1">
-                  {t('about')}
-                </Link>
+                <Link to="/city/oran" className="hover:text-white transition-colors">{t('exploreFooter') || "Explore"} Oran</Link>
+              </li>
+              <li>
+                <Link to="/city/constantine" className="hover:text-white transition-colors">{t('exploreFooter') || "Explore"} Constantine</Link>
               </li>
             </ul>
           </div>
 
-          {/* Services - Enhanced */}
-          <div className="space-y-6">
-            <h3 className="font-semibold text-foreground font-playfair text-lg">{t('services')}</h3>
-            <ul className="space-y-3 font-inter text-sm">
+          {/* Company */}
+          <div className="space-y-4">
+            <h3 className="font-playfair text-lg">{t('companyFooter') || "Company"}</h3>
+            <ul className="space-y-2 text-sm text-white/80">
               <li>
-                <Link to="/publish-property" className="text-muted-foreground hover:text-primary transition-colors hover:translate-x-1 inline-block duration-300 py-1">
-                  {t('publishProperty')}
-                </Link>
+                <Link to="/about" className="hover:text-white transition-colors">{t('about') || "About"}</Link>
               </li>
               <li>
-                <Link to="/holibayt-pay" className="text-muted-foreground hover:text-primary transition-colors hover:translate-x-1 inline-block duration-300 py-1">
-                  {t('holibaytPay')}
-                </Link>
+                <Link to="/blog" className="hover:text-white transition-colors">{t('blog') || "Blog"}</Link>
               </li>
-              <li className="text-muted-foreground hover:text-foreground transition-colors py-1 cursor-pointer">{t('propertyValuation')}</li>
               <li>
-                <Link to="/legal-process" className="text-muted-foreground hover:text-primary transition-colors hover:translate-x-1 inline-block duration-300 py-1">
-                  {t('legalSupport')}
-                </Link>
+                <Link to="/careers" className="hover:text-white transition-colors">{t('careers') || "Careers"}</Link>
               </li>
-              <li className="text-muted-foreground hover:text-foreground transition-colors py-1 cursor-pointer">{t('mortgageAdvice')}</li>
-              <li className="text-muted-foreground hover:text-foreground transition-colors py-1 cursor-pointer">{t('partners')}</li>
-              <li className="text-muted-foreground hover:text-foreground transition-colors py-1 cursor-pointer">{t('press')}</li>
-            </ul>
-          </div>
-
-          {/* Contact Info - Enhanced */}
-          <div className="space-y-6">
-            <h3 className="font-semibold text-foreground font-playfair text-lg">{t('contact')}</h3>
-            <ul className="space-y-4 font-inter text-sm">
-              <li className="group">
-                <div className="flex items-center space-x-3 p-2 rounded-lg hover:bg-muted/50 transition-colors duration-300">
-                  <div className="p-1 rounded bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors duration-300">
-                    <MapPin className="h-4 w-4" />
-                  </div>
-                  <span className="text-muted-foreground group-hover:text-foreground transition-colors duration-300">Alger, Algérie</span>
-                </div>
+              <li>
+                <Link to="/contact-advisor" className="hover:text-white transition-colors">{t('contact') || "Contact"}</Link>
               </li>
-              <li className="group">
-                <a 
-                  href={`tel:${generalSettings?.support_phone || '+213211234567'}`}
-                  className="flex items-center space-x-3 p-2 rounded-lg hover:bg-muted/50 transition-colors duration-300"
-                >
-                  <div className="p-1 rounded bg-accent/10 text-accent group-hover:bg-accent group-hover:text-accent-foreground transition-colors duration-300">
-                    <Phone className="h-4 w-4" />
-                  </div>
-                  <span className="text-muted-foreground group-hover:text-foreground transition-colors duration-300">
-                    {generalSettings?.support_phone || '+213 21 123 456'}
-                  </span>
-                </a>
-              </li>
-              <li className="group">
-                <a 
-                  href={`mailto:${generalSettings?.support_email || 'contact@holibayt.com'}`}
-                  className="flex items-center space-x-3 p-2 rounded-lg hover:bg-muted/50 transition-colors duration-300"
-                >
-                  <div className="p-1 rounded bg-foreground/10 text-foreground group-hover:bg-foreground group-hover:text-background transition-colors duration-300">
-                    <Mail className="h-4 w-4" />
-                  </div>
-                  <span className="text-muted-foreground group-hover:text-foreground transition-colors duration-300">
-                    {generalSettings?.support_email || 'contact@holibayt.com'}
-                  </span>
-                </a>
+              <li>
+                <Link to="/help" className="hover:text-white transition-colors">{t('helpCenter') || "Help Center"}</Link>
               </li>
             </ul>
           </div>
 
-          {/* Newsletter Subscribe */}
-          <div className="space-y-6">
-            <h3 className="font-semibold text-foreground font-playfair text-lg">
-              {t('stayUpdated')}
-            </h3>
-            <div className="space-y-3">
-              <p className="text-sm text-muted-foreground">
-                {t('subscribeNewsletter')}
-              </p>
-              <div className="flex gap-2">
-                <Input 
-                  type="email" 
-                  placeholder={t('enterEmail')}
-                  className="bg-background/50"
-                />
-                <Button className="bg-primary hover:bg-primary/90">
-                  {t('subscribe')}
-                </Button>
-              </div>
-            </div>
+          {/* Partners */}
+          <div className="space-y-4">
+            <h3 className="font-playfair text-lg">{t('partnersFooter') || "Partners"}</h3>
+            <ul className="space-y-2 text-sm text-white/80">
+              <li>
+                <Link to="/host/onboarding" className="hover:text-white transition-colors">{t('becomeAHost') || "Become a Host"}</Link>
+              </li>
+              <li>
+                <Link to="/publish-property" className="hover:text-white transition-colors">{t('listYourProperty') || "List Your Property"}</Link>
+              </li>
+              <li>
+                <Link to="/host" className="hover:text-white transition-colors">{t('hostDashboard') || "Host Dashboard"}</Link>
+              </li>
+              <li>
+                <Link to="/affiliates" className="hover:text-white transition-colors">{t('affiliateProgram') || "Affiliate Program"}</Link>
+              </li>
+              <li>
+                <Link to="/admin" className="hover:text-white transition-colors">{t('adminPortal') || "Admin Portal"}</Link>
+              </li>
+            </ul>
           </div>
         </div>
 
-        {/* Bottom Section - Enhanced */}
-        <div className="border-t border-border/50 mt-12 pt-8 space-y-6">
-          <div className="text-center">
-            <p className="text-sm text-muted-foreground font-inter">
-              {t('legalNotice')}
-            </p>
-          </div>
-          
-          <div className="flex flex-wrap items-center justify-center gap-4 text-xs text-muted-foreground font-inter">
-            <span className="flex items-center gap-1">
-              <span className="w-2 h-2 rounded-full bg-green-500"></span>
-              {t('stripeSecure')}
-            </span>
-            <span>|</span>
-            <span className="flex items-center gap-1">
-              <span className="w-2 h-2 rounded-full bg-primary"></span>
-              {t('verifiedListingsBadge')}
-            </span>
-            <span>|</span>
-            <span className="flex items-center gap-1">
-              <span className="w-2 h-2 rounded-full bg-blue-500"></span>
-              {t('gdprCompliant')}
-            </span>
-          </div>
-          
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <p className="text-muted-foreground font-inter text-sm">
-              © {new Date().getFullYear()} Holibayt. {t('allRightsReserved')}
-            </p>
-            <div className="flex items-center space-x-6 text-xs text-muted-foreground font-inter">
-              <span className="hover:text-foreground cursor-pointer transition-colors duration-300">{t('privacyPolicy')}</span>
-              <span className="hover:text-foreground cursor-pointer transition-colors duration-300">{t('termsOfUse')}</span>
-              <span className="hover:text-foreground cursor-pointer transition-colors duration-300">{t('cookies')}</span>
-            </div>
+        {/* Bottom Bar */}
+        <div className="border-t border-white/20 mt-10 pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-sm text-white/70">
+            © {new Date().getFullYear()} Holibayt. {t('allRightsReserved') || "All rights reserved."}
+          </p>
+          <div className="flex items-center gap-4 text-sm text-white/70">
+            <Link to="/privacy" className="hover:text-white transition-colors">{t('privacyPolicy') || "Privacy Policy"}</Link>
+            <span className="text-white/40">|</span>
+            <Link to="/terms" className="hover:text-white transition-colors">{t('termsOfService') || "Terms of Service"}</Link>
+            <span className="text-white/40">|</span>
+            <Link to="/cookies" className="hover:text-white transition-colors">{t('cookiePolicy') || "Cookie Policy"}</Link>
           </div>
         </div>
       </div>
