@@ -14,6 +14,7 @@ import { AppInstallBanner } from "@/components/AppInstallBanner";
 
 // Pages
 import Index from "./pages/Index";
+import Hotels from "./pages/Hotels";
 import { HostAdPopup } from "@/components/HostAdPopup";
 import NotFound from "./pages/NotFound";
 import Buy from "./pages/Buy";
@@ -92,6 +93,7 @@ const App = () => (
         <Routes>
           {/* ✅ All public routes wrapped in MaintenanceMode */}
           <Route path="/" element={<MaintenanceMode><Index /></MaintenanceMode>} />
+          <Route path="/hotels" element={<MaintenanceMode><Hotels /></MaintenanceMode>} />
           <Route path="/buy" element={<MaintenanceMode><Buy /></MaintenanceMode>} />
           <Route path="/rent" element={<MaintenanceMode><Rent /></MaintenanceMode>} />
           <Route path="/short-stay" element={<MaintenanceMode><ShortStay /></MaintenanceMode>} />
