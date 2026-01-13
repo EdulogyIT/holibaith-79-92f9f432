@@ -26,6 +26,32 @@ const allTranslations = {
     rentHeroDescription: 'Explorez des propriétés locatives de qualité qui correspondent à votre style de vie et budget.',
     findPerfectStay: 'Trouvez Votre Séjour Parfait',
     shortStayHeroDescription: 'Réservez des hébergements uniques pour des séjours courts mémorables à travers l\'Algérie.',
+    
+    // Short Stay Page - New Design
+    findYourPerfectStay: 'Trouvez votre séjour parfait en Algérie',
+    verifiedHomesLocalHosts: 'Maisons vérifiées, hôtes locaux, expériences authentiques',
+    searchDestinations: 'Rechercher une destination',
+    addDates: 'Ajouter des dates',
+    where: 'Où',
+    
+    // City Descriptions for Short Stay
+    algiersDescription: 'Charme de la capitale et beauté côtière',
+    
+    // Property Badges
+    guestFavorite: 'Coup de cœur',
+    rareFind: 'Trouvaille rare',
+    
+    // Browse by Type
+    browseByType: 'Parcourir par type',
+    apartments: 'Appartements',
+    villas: 'Villas',
+    traditionalHouses: 'Maisons traditionnelles',
+    beachfront: 'Front de mer',
+    
+    // Ready to Host CTA
+    readyToHost: 'Prêt à accueillir ?',
+    shareYourHome: 'Partagez votre logement avec les voyageurs et gagnez un revenu supplémentaire',
+    listYourPropertyBtn: 'Publier votre propriété',
     about: 'À propos',
     blog: 'Blog',
     login: 'Se connecter',
@@ -1409,6 +1435,24 @@ const allTranslations = {
     rentHeroDescription: 'Explore quality rental properties that match your lifestyle and budget.',
     findPerfectStay: 'Find Your Perfect Stay',
     shortStayHeroDescription: 'Book unique accommodations for memorable short-term stays across Algeria.',
+    
+    // Short Stay Page - New Design
+    findYourPerfectStay: 'Find your perfect stay in Algeria',
+    verifiedHomesLocalHosts: 'Verified homes, local hosts, authentic experiences',
+    searchDestinations: 'Search destinations',
+    addDates: 'Add dates',
+    where: 'Where',
+    algiersDescription: 'Capital charm meets coastal beauty',
+    guestFavorite: 'Guest favorite',
+    rareFind: 'Rare find',
+    browseByType: 'Browse by type',
+    apartments: 'Apartments',
+    villas: 'Villas',
+    traditionalHouses: 'Traditional Houses',
+    beachfront: 'Beachfront',
+    readyToHost: 'Ready to host?',
+    shareYourHome: 'Share your home with travelers and earn extra income',
+    listYourPropertyBtn: 'List your property',
     about: 'About',
     blog: 'Blog',
     login: 'Login',
