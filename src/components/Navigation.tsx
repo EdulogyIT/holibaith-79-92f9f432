@@ -107,6 +107,12 @@ const Navigation = ({ onLoginClick }: NavigationProps = {}) => {
               {t("shortStay")}
             </Link>
             <Link
+              to="/explore"
+              className="text-foreground hover:text-primary transition-colors font-inter text-sm lg:text-base"
+            >
+              {t("explore")}
+            </Link>
+            <Link
               to="/about"
               className="text-foreground hover:text-primary transition-colors font-inter text-sm lg:text-base"
             >
@@ -335,6 +341,13 @@ const Navigation = ({ onLoginClick }: NavigationProps = {}) => {
                 onClick={() => setIsMenuOpen(false)}
               >
                 {t("shortStay")}
+              </Link>
+              <Link
+                to="/explore"
+                className="text-foreground hover:text-primary transition-colors font-inter font-medium py-2 min-h-[44px] flex items-center"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                {t("explore")}
               </Link>
               <Link
                 to="/about"

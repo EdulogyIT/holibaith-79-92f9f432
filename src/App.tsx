@@ -20,6 +20,7 @@ import NotFound from "./pages/NotFound";
 import Buy from "./pages/Buy";
 import Rent from "./pages/Rent";
 import ShortStay from "./pages/ShortStay";
+import Explore from "./pages/Explore";
 import About from "./pages/About";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
@@ -97,6 +98,7 @@ const App = () => (
           <Route path="/buy" element={<MaintenanceMode><Buy /></MaintenanceMode>} />
           <Route path="/rent" element={<MaintenanceMode><Rent /></MaintenanceMode>} />
           <Route path="/short-stay" element={<MaintenanceMode><ShortStay /></MaintenanceMode>} />
+          <Route path="/explore" element={<MaintenanceMode><Explore /></MaintenanceMode>} />
           
           <Route path="/about" element={<MaintenanceMode><About /></MaintenanceMode>} />
           <Route path="/blog" element={<MaintenanceMode><Blog /></MaintenanceMode>} />
