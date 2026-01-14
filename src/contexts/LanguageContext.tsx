@@ -52,6 +52,60 @@ const allTranslations = {
     readyToHost: 'Prêt à accueillir ?',
     shareYourHome: 'Partagez votre logement avec les voyageurs et gagnez un revenu supplémentaire',
     listYourPropertyBtn: 'Publier votre propriété',
+    
+    // Explore Page
+    explore: 'Explorer',
+    exploreAlgeria: 'Explorez l\'Algérie',
+    discoverExceptionalHotels: 'Découvrez des hôtels exceptionnels et des maisons authentiques à travers les plus belles destinations d\'Algérie',
+    browseHotels: 'Parcourir les hôtels',
+    browseShortStays: 'Parcourir les séjours courts',
+    hotelsByCity: 'Hôtels par ville',
+    professionalServiceAmenities: 'Service professionnel et équipements premium',
+    viewAllHotels: 'Voir tous les hôtels',
+    shortStaysByCity: 'Séjours courts par ville',
+    authenticHomesCharacter: 'Maisons authentiques avec caractère local',
+    viewAllShortStays: 'Voir tous les séjours courts',
+    shareYourSpace: 'Partagez votre espace avec les voyageurs',
+    joinThousandsHosts: 'Rejoignez des milliers d\'hôtes qui gagnent un revenu supplémentaire en accueillant des voyageurs. Inscrivez votre hôtel ou maison sur Holibayt et touchez des voyageurs à travers l\'Algérie.',
+    
+    // City names
+    algiers: 'Alger',
+    oran: 'Oran',
+    constantine: 'Constantine',
+    tlemcen: 'Tlemcen',
+    annaba: 'Annaba',
+    tamanrasset: 'Tamanrasset',
+    tipaza: 'Tipaza',
+    bejaia: 'Béjaïa',
+    ghardaia: 'Ghardaïa',
+    
+    // Region names
+    algiersRegion: 'Région d\'Alger',
+    oranRegion: 'Région d\'Oran',
+    constantineRegion: 'Région de Constantine',
+    tlemcenRegion: 'Région de Tlemcen',
+    annabaRegion: 'Région d\'Annaba',
+    tamanrassetRegion: 'Région de Tamanrasset',
+    tipazaRegion: 'Région de Tipaza',
+    bejaiaRegion: 'Région de Béjaïa',
+    ghardaiaRegion: 'Région de Ghardaïa',
+    
+    // Hotel descriptions by city
+    algiersHotelDesc: 'Hôtels de luxe dans la capitale animée',
+    oranHotelDesc: 'Propriétés en bord de Méditerranée',
+    constantineHotelDesc: 'Hôtels historiques avec vue sur les ponts',
+    tlemcenHotelDesc: 'Séjours boutique au cœur culturel',
+    annabaHotelDesc: 'Hôtels et complexes en bord de plage',
+    tamanrassetHotelDesc: 'Hébergements de luxe dans le désert',
+    
+    // Short stay descriptions by city
+    algiersShortStayDesc: 'Riads authentiques et appartements modernes',
+    oranShortStayDesc: 'Villas côtières et appartements modernes',
+    constantineShortStayDesc: 'Maisons traditionnelles avec caractère',
+    tipazaShortStayDesc: 'Locations de vacances en bord de mer',
+    bejaiaShortStayDesc: 'Escapades entre montagne et mer',
+    ghardaiaShortStayDesc: 'Expériences uniques dans le désert',
+    
     about: 'À propos',
     blog: 'Blog',
     login: 'Se connecter',
@@ -531,7 +585,7 @@ const allTranslations = {
     stayTitle: 'Short Stay',
     staySubtitle: 'Séjours courts et vacances',
     stayDescription: 'L\'Airbnb algérien ! Réservez votre séjour parfait pour vos vacances, voyages d\'affaires ou visites familiales. Logements uniques et expériences authentiques.',
-    explore: 'Explorer',
+    // explore key defined above in Explore Page section
     whyChooseHolibayt: 'Pourquoi choisir Holibayt ?',
     securityGuaranteed: 'Sécurité garantie',
     securityDesc: 'Tous nos biens et utilisateurs sont vérifiés',
@@ -1453,6 +1507,60 @@ const allTranslations = {
     readyToHost: 'Ready to host?',
     shareYourHome: 'Share your home with travelers and earn extra income',
     listYourPropertyBtn: 'List your property',
+    
+    // Explore Page
+    explore: 'Explore',
+    exploreAlgeria: 'Explore Algeria',
+    discoverExceptionalHotels: 'Discover exceptional hotels and authentic homes across Algeria\'s most beautiful destinations',
+    browseHotels: 'Browse Hotels',
+    browseShortStays: 'Browse Short Stays',
+    hotelsByCity: 'Hotels by City',
+    professionalServiceAmenities: 'Professional service and premium amenities',
+    viewAllHotels: 'View all hotels',
+    shortStaysByCity: 'Short Stays by City',
+    authenticHomesCharacter: 'Authentic homes with local character',
+    viewAllShortStays: 'View all short stays',
+    shareYourSpace: 'Share your space with travelers',
+    joinThousandsHosts: 'Join thousands of hosts earning extra income by welcoming guests to their properties. List your hotel or home with Holibayt and reach travelers across Algeria.',
+    
+    // City names
+    algiers: 'Algiers',
+    oran: 'Oran',
+    constantine: 'Constantine',
+    tlemcen: 'Tlemcen',
+    annaba: 'Annaba',
+    tamanrasset: 'Tamanrasset',
+    tipaza: 'Tipaza',
+    bejaia: 'Bejaia',
+    ghardaia: 'Ghardaia',
+    
+    // Region names
+    algiersRegion: 'Algiers Region',
+    oranRegion: 'Oran Region',
+    constantineRegion: 'Constantine Region',
+    tlemcenRegion: 'Tlemcen Region',
+    annabaRegion: 'Annaba Region',
+    tamanrassetRegion: 'Tamanrasset Region',
+    tipazaRegion: 'Tipaza Region',
+    bejaiaRegion: 'Bejaia Region',
+    ghardaiaRegion: 'Ghardaia Region',
+    
+    // Hotel descriptions by city
+    algiersHotelDesc: 'Luxury hotels in the vibrant capital',
+    oranHotelDesc: 'Mediterranean seafront properties',
+    constantineHotelDesc: 'Historic hotels with bridge views',
+    tlemcenHotelDesc: 'Boutique stays in cultural heart',
+    annabaHotelDesc: 'Beachfront hotels and resorts',
+    tamanrassetHotelDesc: 'Desert luxury accommodations',
+    
+    // Short stay descriptions by city
+    algiersShortStayDesc: 'Authentic riads and modern apartments',
+    oranShortStayDesc: 'Coastal villas and modern flats',
+    constantineShortStayDesc: 'Traditional homes with character',
+    tipazaShortStayDesc: 'Beachfront vacation rentals',
+    bejaiaShortStayDesc: 'Mountain and sea escapes',
+    ghardaiaShortStayDesc: 'Unique desert experiences',
+    
     about: 'About',
     blog: 'Blog',
     login: 'Login',
@@ -2041,7 +2149,7 @@ const allTranslations = {
     stayTitle: 'Short Stay',
     staySubtitle: 'Short stays and vacations',
     stayDescription: 'The Algerian Airbnb! Book your perfect stay for your vacations, business trips or family visits. Unique accommodations and authentic experiences.',
-    explore: 'Explore',
+    // explore key defined above in Explore Page section
     whyChooseHolibayt: 'Why choose Holibayt?',
     securityGuaranteed: 'Security guaranteed',
     securityDesc: 'All our properties and users are verified',
