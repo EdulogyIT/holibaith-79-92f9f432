@@ -25,8 +25,34 @@ const City = () => {
   const [rentProperties, setRentProperties] = useState<any[]>([]);
   const [shortStayProperties, setShortStayProperties] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  
+
   useScrollToTop();
+
+  const normalizeCitySlug = (slug: string | undefined) => {
+    const s = (slug || "").trim().toLowerCase();
+    if (!s) return "";
+
+    // Support alternate/English spellings used elsewhere in the app
+    if (s === "algiers") return "alger";
+
+    return s;
+  };
+
+  const buildCitySearchOr: (aliases: readonly string[]) => string = (aliases) => {
+    const terms = aliases
+      .map((a) => a.trim())
+      .filter(Boolean)
+      .map((a) => a.replace(/%/g, ""));
+
+    const chunks: string[] = [];
+    for (const term of terms) {
+      chunks.push(`city.ilike.%${term}%`);
+      chunks.push(`location.ilike.%${term}%`);
+    }
+    return chunks.join(",");
+  };
+
+  const normalizedCityId = normalizeCitySlug(cityId);
 
   const cityData = {
     alger: {
@@ -38,18 +64,20 @@ const City = () => {
         area: "809 km²",
         founded: t('tenthCentury')
       },
-      image: algerImage
+      image: algerImage,
+      aliases: ["alger", "algiers", "algiers", "algiers"]
     },
     oran: {
       name: t('cityOran'),
       description: t('oranDescription'),
       history: t('oranHistory'),
       stats: {
-        population: "1.5M " + t('inhabitantsShort'), 
+        population: "1.5M " + t('inhabitantsShort'),
         area: "2,121 km²",
         founded: "903"
       },
-      image: oranImage
+      image: oranImage,
+      aliases: ["oran"]
     },
     constantine: {
       name: t('cityConstantine'),
@@ -57,10 +85,11 @@ const City = () => {
       history: t('constantineHistory'),
       stats: {
         population: "950k " + t('inhabitantsShort'),
-        area: "231 km²", 
+        area: "231 km²",
         founded: t('thirdMillenniumBC')
       },
-      image: constantineImage
+      image: constantineImage,
+      aliases: ["constantine"]
     },
     annaba: {
       name: t('cityAnnaba'),
@@ -71,7 +100,8 @@ const City = () => {
         area: "1,439 km²",
         founded: t('twelfthCenturyBC')
       },
-      image: annabaImage
+      image: annabaImage,
+      aliases: ["annaba"]
     },
     setif: {
       name: t('citySetif'),
@@ -82,7 +112,8 @@ const City = () => {
         area: "127 km²",
         founded: "1st Century"
       },
-      image: algerImage
+      image: algerImage,
+      aliases: ["setif", "sétif"]
     },
     tlemcen: {
       name: t('cityTlemcen'),
@@ -93,7 +124,8 @@ const City = () => {
         area: "9,017 km²",
         founded: "8th Century"
       },
-      image: oranImage
+      image: oranImage,
+      aliases: ["tlemcen", "tlemcen"]
     },
     bejaia: {
       name: t('cityBejaia'),
@@ -104,7 +136,8 @@ const City = () => {
         area: "3,268 km²",
         founded: "Pre-Roman times"
       },
-      image: annabaImage
+      image: annabaImage,
+      aliases: ["bejaia", "béjaïa", "bejaïa"]
     },
     blida: {
       name: t('cityBlida'),
@@ -115,11 +148,12 @@ const City = () => {
         area: "1,696 km²",
         founded: "16th Century"
       },
-      image: constantineImage
+      image: constantineImage,
+      aliases: ["blida"]
     }
   } as const;
 
-  const currentCity = cityData[cityId as keyof typeof cityData];
+  const currentCity = cityData[normalizedCityId as keyof typeof cityData];
 
   useEffect(() => {
     if (currentCity) {
@@ -132,24 +166,23 @@ const City = () => {
     if (!currentCity) return;
     try {
       setIsLoading(true);
-      const searchCity = cityId || '';
-      
+      const orQuery = buildCitySearchOr([...currentCity.aliases]);
       const { data: buyData } = await supabase
         .from('properties').select('*')
         .eq('category', 'sale').eq('status', 'active')
-        .or(`city.ilike.%${searchCity}%,location.ilike.%${searchCity}%`)
+        .or(orQuery)
         .limit(2);
-      
+
       const { data: rentData } = await supabase
         .from('properties').select('*')
         .eq('category', 'rent').eq('status', 'active')
-        .or(`city.ilike.%${searchCity}%,location.ilike.%${searchCity}%`)
+        .or(orQuery)
         .limit(2);
-      
+
       const { data: shortStayData } = await supabase
         .from('properties').select('*')
         .eq('category', 'short-stay').eq('status', 'active')
-        .or(`city.ilike.%${searchCity}%,location.ilike.%${searchCity}%`)
+        .or(orQuery)
         .limit(2);
 
       setBuyProperties(buyData || []);
