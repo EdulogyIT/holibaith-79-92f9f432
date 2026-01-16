@@ -48,13 +48,16 @@ const Footer = () => {
                 <Link to="/short-stay" className="hover:text-white transition-colors">{t('shortStay') || "Short Stay"}</Link>
               </li>
               <li>
-                <Link to="/city/algiers" className="hover:text-white transition-colors">{t('exploreFooter') || "Explore"} Algiers</Link>
+                <Link to="/explore" className="hover:text-white transition-colors">{t('explore') || "Explore"}</Link>
               </li>
               <li>
-                <Link to="/city/oran" className="hover:text-white transition-colors">{t('exploreFooter') || "Explore"} Oran</Link>
+                <Link to="/city/algiers" className="hover:text-white transition-colors">{t('algiers') || "Algiers"}</Link>
               </li>
               <li>
-                <Link to="/city/constantine" className="hover:text-white transition-colors">{t('exploreFooter') || "Explore"} Constantine</Link>
+                <Link to="/city/oran" className="hover:text-white transition-colors">{t('oran') || "Oran"}</Link>
+              </li>
+              <li>
+                <Link to="/city/constantine" className="hover:text-white transition-colors">{t('constantine') || "Constantine"}</Link>
               </li>
             </ul>
           </div>
