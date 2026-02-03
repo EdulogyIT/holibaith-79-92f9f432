@@ -76,10 +76,10 @@ const CitiesSection = () => {
         {/* Section Header */}
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-playfair italic text-foreground mb-4">
-            {t('exploreByCityTitle')}
+            Explore by City
           </h2>
           <p className="text-lg text-muted-foreground font-inter font-light max-w-3xl mx-auto">
-            {t('exploreByCitySubtitle')}
+            Discover the unique character of Algeria's most captivating destinations
           </p>
         </div>
 
