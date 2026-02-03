@@ -10,26 +10,26 @@ const WhyChooseSection = () => {
   const features = [
     {
       id: 'verified',
-      title: t('verifiedPropertiesTitle'),
-      description: t('verifiedPropertiesDesc'),
+      title: 'Verified Properties',
+      description: 'Every property is personally inspected and verified by our team to ensure the highest standards',
       image: verifiedImage
     },
     {
       id: 'curated',
-      title: t('curatedExcellenceTitle'),
-      description: t('curatedExcellenceDesc'),
+      title: 'Curated Excellence',
+      description: 'Handpicked accommodations that represent the best of Algerian hospitality and luxury',
       image: curatedImage
     },
     {
       id: 'local',
-      title: t('localExpertiseTitle'),
-      description: t('localExpertiseDesc'),
+      title: 'Local Expertise',
+      description: 'Authentic experiences guided by locals who know and love their cities',
       image: localImage
     },
     {
       id: 'premium',
-      title: t('premiumServiceTitle'),
-      description: t('premiumServiceDesc'),
+      title: 'Premium Service',
+      description: '24/7 dedicated support ensuring your journey is seamless from booking to checkout',
       image: premiumImage
     }
   ];
@@ -38,11 +38,11 @@ const WhyChooseSection = () => {
     <section className="py-16 md:py-20 bg-muted/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-playfair italic text-foreground mb-4">
-            {t('whyChooseTitleNew')}
+          <h2 className="text-3xl md:text-4xl font-playfair text-foreground mb-4">
+            Why Choose Holibayt
           </h2>
           <p className="text-lg text-muted-foreground font-inter font-light max-w-3xl mx-auto">
-            {t('whyChooseSubtitleNew')}
+            Redefining hospitality in Algeria with uncompromising quality
           </p>
         </div>
 

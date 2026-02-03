@@ -92,9 +92,9 @@ const HeroSection = () => {
             </p>
           </div>
           
-          {/* Mode Selector - Pill Style */}
+          {/* Mode Selector - Full Width Rectangular Tabs */}
           <div className="mb-6 flex justify-center">
-            <div className="inline-flex bg-white/95 backdrop-blur-md rounded-full p-1.5 shadow-lg">
+            <div className="inline-flex bg-white/95 backdrop-blur-md rounded-xl p-1 shadow-lg w-full max-w-xs">
               {modes.map((mode) => {
                 const IconComponent = mode.icon;
                 return (
@@ -102,10 +102,10 @@ const HeroSection = () => {
                     key={mode.id}
                     onClick={() => setSelectedMode(mode.id)}
                     className={cn(
-                      "flex items-center gap-2 px-6 py-3 rounded-full font-inter font-medium text-sm transition-all duration-300",
+                      "flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-inter font-medium text-sm transition-all duration-300",
                       selectedMode === mode.id
-                        ? "bg-[hsl(160,50%,30%)] text-white shadow-md"
-                        : "text-muted-foreground hover:text-foreground"
+                        ? "bg-[#2F6B4F] text-white shadow-md"
+                        : "text-gray-600 hover:text-gray-900"
                     )}
                   >
                     <IconComponent className="h-4 w-4" />

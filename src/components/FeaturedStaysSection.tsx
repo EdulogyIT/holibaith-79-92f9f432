@@ -59,43 +59,43 @@ const FeaturedStaysSection = () => {
     fetchFeaturedProperties();
   }, []);
 
-  // Fallback sample data if no featured properties
+  // Sample data matching screenshots exactly
   const sampleProperties: FeaturedProperty[] = [
     {
       id: '1',
       title: 'Le Royal Mansour',
-      city: 'Alger',
-      price: '180',
+      city: 'Algiers',
+      price: '180.00',
       images: ['/lovable-uploads/bd206675-bfd0-4aee-936b-479f6c1240ca.png'],
       rating: 4.9,
-      reviewCount: 127
+      reviewCount: 324
     },
     {
       id: '2',
       title: 'Mediterranean Villa',
       city: 'Oran',
-      price: '120',
+      price: '120.00',
       images: ['/lovable-uploads/bd206675-bfd0-4aee-936b-479f6c1240ca.png'],
       rating: 4.8,
-      reviewCount: 89
+      reviewCount: 156
     },
     {
       id: '3',
-      title: 'Sahara Desert Lodge',
+      title: 'Sahara Desert Resort',
       city: 'Tamanrasset',
-      price: '150',
+      price: '150.00',
       images: ['/lovable-uploads/bd206675-bfd0-4aee-936b-479f6c1240ca.png'],
       rating: 4.7,
-      reviewCount: 64
+      reviewCount: 203
     },
     {
       id: '4',
-      title: 'Casbah Heritage Home',
-      city: 'Alger',
-      price: '95',
+      title: 'Casbah Heritage House',
+      city: 'Algiers',
+      price: '95.00',
       images: ['/lovable-uploads/bd206675-bfd0-4aee-936b-479f6c1240ca.png'],
       rating: 4.9,
-      reviewCount: 156
+      reviewCount: 287
     }
   ];
 
@@ -107,10 +107,10 @@ const FeaturedStaysSection = () => {
         {/* Section Header */}
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-playfair italic text-foreground mb-4">
-            {t('featuredStaysTitle')}
+            Featured Stays
           </h2>
           <p className="text-lg text-muted-foreground font-inter font-light max-w-3xl mx-auto">
-            {t('featuredStaysSubtitle')}
+            Handpicked accommodations that define luxury and authenticity
           </p>
         </div>
 
@@ -129,17 +129,25 @@ const FeaturedStaysSection = () => {
                   alt={property.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
-                {/* Featured Badge */}
-                <div className="absolute top-3 left-3 bg-[hsl(40,60%,55%)] text-white text-xs font-inter font-semibold px-3 py-1 rounded-full">
-                  {t('featured')}
+                {/* Featured Badge - Gold/Tan color */}
+                <div className="absolute top-3 left-3 bg-[#C4A574] text-white text-xs font-inter font-semibold px-3 py-1 rounded-full">
+                  Featured
                 </div>
               </div>
 
               {/* Content */}
               <div className="p-4">
-                <h3 className="text-lg font-playfair font-semibold text-foreground mb-1 line-clamp-1">
-                  {property.title}
-                </h3>
+                {/* Title and Rating Row */}
+                <div className="flex items-start justify-between mb-2">
+                  <h3 className="text-lg font-playfair font-semibold text-foreground line-clamp-1 flex-1">
+                    {property.title}
+                  </h3>
+                  {/* Rating */}
+                  <div className="flex items-center gap-1 ml-2">
+                    <Star className="h-4 w-4 fill-[#C4A574] text-[#C4A574]" />
+                    <span className="text-sm font-inter font-medium text-foreground">{property.rating?.toFixed(1)}</span>
+                  </div>
+                </div>
                 
                 {/* Location */}
                 <div className="flex items-center text-muted-foreground mb-3">
@@ -147,19 +155,13 @@ const FeaturedStaysSection = () => {
                   <span className="text-sm font-inter">{property.city}</span>
                 </div>
 
-                {/* Price and Rating Row */}
+                {/* Price and Reviews Row */}
                 <div className="flex items-center justify-between">
                   <div>
                     <span className="text-lg font-inter font-bold text-foreground">€{property.price}</span>
-                    <span className="text-sm text-muted-foreground font-inter">{t('perNight')}</span>
+                    <span className="text-sm text-muted-foreground font-inter"> / night</span>
                   </div>
-                  
-                  {/* Rating */}
-                  <div className="flex items-center gap-1">
-                    <Star className="h-4 w-4 fill-[hsl(45,80%,50%)] text-[hsl(45,80%,50%)]" />
-                    <span className="text-sm font-inter font-medium text-foreground">{property.rating?.toFixed(1)}</span>
-                    <span className="text-xs text-muted-foreground font-inter">({property.reviewCount})</span>
-                  </div>
+                  <span className="text-xs text-muted-foreground font-inter">{property.reviewCount} reviews</span>
                 </div>
               </div>
             </Card>

@@ -5,6 +5,7 @@ import CitiesSection from "@/components/CitiesSection";
 import TwoWaysSection from "@/components/TwoWaysSection";
 import WhyChooseSection from "@/components/WhyChooseSection";
 import FeaturedStaysSection from "@/components/FeaturedStaysSection";
+import ReadyToHostCTA from "@/components/ReadyToHostCTA";
 import AIChatBox from "@/components/AIChatBox";
 import SEOHead from "@/components/SEOHead";
 import { AppInstallBanner } from "@/components/AppInstallBanner";
@@ -48,8 +49,9 @@ const Index = () => {
         <HeroSection />
         <TwoWaysSection />
         <CitiesSection />
-        <WhyChooseSection />
         <FeaturedStaysSection />
+        <WhyChooseSection />
+        <ReadyToHostCTA />
       </main>
       <Footer />
       <AIChatBox />
