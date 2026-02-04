@@ -113,7 +113,7 @@ const HeroSection = () => {
           </div>
 
           {/* Search Card */}
-          <Card className="max-w-4xl mx-auto p-4 sm:p-6 bg-white/98 backdrop-blur-md border-0 shadow-2xl rounded-2xl">
+          <Card className="max-w-xl mx-auto p-4 sm:p-6 bg-white/98 backdrop-blur-md border-0 shadow-2xl rounded-2xl">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               {/* Destination */}
               <div className="md:col-span-1">
@@ -215,7 +215,7 @@ const HeroSection = () => {
               className={cn(
                 "w-full h-12 mt-4 font-inter font-semibold text-base rounded-xl transition-all duration-300",
                 isFormValid() 
-                  ? "bg-[hsl(160,50%,30%)] hover:bg-[hsl(160,50%,25%)] text-white shadow-lg hover:shadow-xl" 
+                  ? "bg-[#2F6B4F] hover:bg-[#265A42] text-white shadow-lg hover:shadow-xl" 
                   : "bg-muted text-muted-foreground cursor-not-allowed"
               )}
             >
